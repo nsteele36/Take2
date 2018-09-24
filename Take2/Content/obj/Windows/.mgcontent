@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road2.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/square.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road3.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/square2.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road4.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road5.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/rectangle.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road6.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/Time.spritefont</File>
+  </SourceFiles>
+</SourceFileCollection>

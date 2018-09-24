@@ -1,0 +1,87 @@
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\square.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Take2.exe
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Take2.pdb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\obj\x86\Debug\Take2.csprojAssemblyReference.cache
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\obj\x86\Debug\Take2.csproj.CoreCompileInputs.cache
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\obj\x86\Debug\Take2.csproj.CopyComplete
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\obj\x86\Debug\Take2.exe
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\obj\x86\Debug\Take2.pdb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\road.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Aether.Physics2D.dll
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\rectangle.xnb
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Content\rectangle.xnb
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Content\road.xnb
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Content\square.xnb
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Take2.exe
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Take2.pdb
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\Aether.Physics2D.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\obj\x86\Debug\Take2.csprojAssemblyReference.cache
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\obj\x86\Debug\Take2.csproj.CoreCompileInputs.cache
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\obj\x86\Debug\Take2.csproj.CopyComplete
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\obj\x86\Debug\Take2.exe
+C:\Users\labuser\Documents\TxBDC\Take2\Take2\obj\x86\Debug\Take2.pdb
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\rectangle.xnb
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\road.xnb
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\square.xnb
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Take2.exe
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Take2.pdb
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\Aether.Physics2D.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\MonoGame.Framework.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.MediaFoundation.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XAudio2.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.DXGI.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D11.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.XInput.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\obj\x86\Debug\Take2.csprojAssemblyReference.cache
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\obj\x86\Debug\Take2.csproj.CoreCompileInputs.cache
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\obj\x86\Debug\Take2.csproj.CopyComplete
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\obj\x86\Debug\Take2.exe
+C:\Users\labuser\Documents\TxBDCDesktop\Take2\Take2\Take2\obj\x86\Debug\Take2.pdb
