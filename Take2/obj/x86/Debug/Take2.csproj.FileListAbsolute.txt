@@ -147,3 +147,6 @@ C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Tak
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Aether.Physics2D.Diagnostics.dll
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\FitMi_Research_Puck.dll
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\HidSharp.pdb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform1.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform2.xnb

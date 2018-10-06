@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 
-
 namespace Take2.Models
 {
-    public class Input
+   public class Input
     {
         public Keys Up;
         public Keys Down;

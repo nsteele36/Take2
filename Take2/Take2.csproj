@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collision\Collision.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Models\Input.cs" />
     <Compile Include="Program.cs" />

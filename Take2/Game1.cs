@@ -24,6 +24,7 @@ namespace Take2
         private static int ScreenWidth;
         private static int ScreenHeight;
 
+
         //OBJECTS
         private Player _player;
         private List<Road> _road1;
@@ -42,9 +43,10 @@ namespace Take2
         private World world;
         private DebugView debugView;
         private Boolean debuggerSwitch = false;
+        private float playerBodySizeX = 60f;
 
         //CAMERA
-        private Vector3 _cameraPosition = new Vector3(0, 1.70f, 0);       
+        private Vector3 _cameraPosition = new Vector3(0, 1.70f, 0);
         private float cameraViewWidth = 50.5f;
 
         //TEXT
@@ -66,77 +68,7 @@ namespace Take2
 
         protected override void Initialize()
         {
-            //CREATE GRAVITY 
-            world = new World(new Vector2(0, -9.8f));
-
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteBatchEffect = new BasicEffect(graphics.GraphicsDevice);
-            _spriteBatchEffect.TextureEnabled = true;
-
-            //LOAD TEXTURES
-            roadTexture = Content.Load<Texture2D>("road6");
-            playerTexture = Content.Load<Texture2D>("square2");
-            obstacleTexture = Content.Load<Texture2D>("rectangle");
-            font = Content.Load<SpriteFont>("Time");
-
-            //CREATE ROAD
-            _road1 = new List<Road>();
-            CreateRoad(_road1, 1);
-
-            _road2 = new List<Road>();
-            CreateRoad(_road2, 2);
-
-            _road3 = new List<Road>();
-            CreateRoad(_road3, 3);
-
-            //CREATE PLAYER
-            _player = new Player(playerTexture)
-            {
-                Input = new Input()
-                {
-                    Left = Keys.Left,
-                    Right = Keys.Right,
-                    Up = Keys.Up,
-                    Down = Keys.Down,
-                    Jump = Keys.Space,
-                },
-                color = Color.White,
-                texture = playerTexture,
-                //pos = new Vector2(0, 1f),
-
-            };
-
-            Vector2 playerPosition = new Vector2(-99f, 1f);
-            _player.bodySize = new Vector2(1f, 1f);
-            _player.body = world.CreateRectangle(_player.bodySize.X, _player.bodySize.Y, 1f, playerPosition);
-            _player.body.BodyType = BodyType.Dynamic;
-            _player.body.SetRestitution(0.0f);
-            _player.body.SetFriction(0.0f);
-            _player.textureSize = new Vector2(playerTexture.Width, playerTexture.Height);
-            _player.textureOrigin = _player.textureSize / 2f;
-            _player.world = world;
-            _player.puckEnabled = _player.initializePuck();
-            
-            /*
-            Console.Write("working1!");
-            Vertices shapePos = new Vertices();
-            shapePos.Add(new Vector2(0, 0f));
-            PolygonShape standingShape = new PolygonShape(shapePos, 1f);
-            Fixture standingPosition = _player.body.CreateFixture(standingShape);
-            Console.WriteLine("working2!");*/
-            //CREATE OBSTACLES
-
-            _obstacles1 = new List<Obstacle>();
-            _obstacles2 = new List<Obstacle>();
-            _obstacles3 = new List<Obstacle>();
-            
-            //IntializeObstacles(_obstacles1, _road1);
-
-            //CREATE DEBUGGER
-            debugView = new DebugView(world);
-            debugView.AppendFlags(DebugViewFlags.DebugPanel | DebugViewFlags.PolygonPoints);
-            debugView.LoadContent(GraphicsDevice, Content);
-
+            createGame();
             base.Initialize();
         }
 
@@ -151,7 +83,15 @@ namespace Take2
 
         protected override void Update(GameTime gameTime)
         {
-            totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if ((Keyboard.GetState().IsKeyDown(Keys.R) || _player.puckData2 > 500) && _player.crashed)
+            {
+                resetGame();
+            }
+
+            if (!_player.crashed)
+                totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 //display players last position
@@ -189,8 +129,8 @@ namespace Take2
         }
         protected override void Draw(GameTime gameTime)
         {
-            
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GraphicsDevice.Clear(Color.Black);
 
             //CREATE VIEW POINT FROM CAMERA
             var vp = GraphicsDevice.Viewport;
@@ -205,17 +145,13 @@ namespace Take2
 
             //DRAW ROAD
             foreach (Road piece in _road1)
-                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
-
-           // spriteBatch.Draw(piece.texture, piece.body.Position * (piece.bodySize / piece.textureSize), null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
             foreach (Road piece in _road2)
-                //* (piece.bodySize / piece.textureSize)
-                spriteBatch.Draw(piece.texture, piece.body.Position , null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
             foreach (Road piece in _road3)
-                //* (piece.bodySize / piece.textureSize)
-                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
             //DRAW OBSTACLES
             foreach (Obstacle obs in _obstacles1)
@@ -232,17 +168,307 @@ namespace Take2
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(100, 50), Color.Black);
+            spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(100, 20), Color.White);
+            spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(100, 40), Color.White);
+
+            if (_player.crashed)
+                spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(100, 60), Color.White);
 
             spriteBatch.End();
 
-
             //DRAW DEBUGGER
             if (debuggerSwitch)
+            {
                 debugView.RenderDebugData(_spriteBatchEffect.Projection, _spriteBatchEffect.View, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, 0.8f);
+                spriteBatch.Begin();
+                if(_player.currentRoad == 1)
+                    spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.currentRoad + ")", new Vector2(50, 80), Color.White);
+                else if(_player.currentRoad == 2)
+                    spriteBatch.DrawString(font, "Current Road: TOP (road" + _player.currentRoad + ")", new Vector2(50, 80), Color.White);
+                else if(_player.currentRoad == 3)
+                    spriteBatch.DrawString(font, "Current Road: BOTTOM (road" + _player.currentRoad + ")", new Vector2(50, 80), Color.White);
+                spriteBatch.End();
+            }
+
 
             base.Draw(gameTime);
         }
+
+        protected void AddObstacle(List<Obstacle> o, Vector2 pos)
+        {
+            Obstacle obs = new Obstacle(obstacleTexture)
+            {
+                color = Color.Red
+            };
+            obs.bodySize = new Vector2(1f, 4f);
+            obs.body = world.CreateRectangle(obs.bodySize.X, obs.bodySize.Y, 2f, pos);
+            obs.body.BodyType = BodyType.Static;
+            obs.body.SetRestitution(0.0f);
+            obs.body.SetFriction(0.0f);
+            obs.textureSize = new Vector2(obs.texture.Width, obs.texture.Height);
+            obs.textureOrigin = obs.textureSize / 2f;
+            obs.world = world;
+            o.Add(obs);
+        }
+
+        public void obstacleUpdate(List<Obstacle> obs, int roadNum)
+        {
+            //MIDDLE ROAD
+            if(roadNum == 1)
+            {
+                if (obs.Count == 0)
+                {
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 60f, _road1[0].body.Position.Y + 2.5f));
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 120f, _road1[0].body.Position.Y + 3.5f));
+
+                }
+
+                for (int i = 0; i < obs.Count; i++)
+                {
+                    if (_player.body.Position.X - 10 > obs[i].body.Position.X)
+                    {
+                        world.Remove(obs[i].body);
+                        obs.RemoveAt(0);
+
+                        if(_player.currentRoad == roadNum && !_player.crashed)
+                            _player.obstaclesPassed++;
+                    }
+
+                    if ( _player.body.Position.Y > _road1[0].body.Position.Y && _player.body.Position.Y < _road2[0].body.Position.Y)
+                        _player.currentRoad = roadNum;
+                }
+            }
+            //TOP ROAD
+            if (roadNum == 2)
+            {
+                if (obs.Count == 0)
+                {
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 70f, _road2[0].body.Position.Y + 2.5f));
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 130f, _road2[0].body.Position.Y + 3.5f));
+                }
+                for (int i = 0; i < obs.Count; i++)
+                {
+                    if (_player.body.Position.X - 10 > obs[i].body.Position.X)
+                    {
+                        world.Remove(obs[i].body);
+                        obs.RemoveAt(0);
+
+                        if (_player.currentRoad == roadNum && !_player.crashed)
+                            _player.obstaclesPassed++;
+                    }
+
+                    if (_player.body.Position.Y > _road2[0].body.Position.Y)
+                        _player.currentRoad = roadNum;
+                    
+                }
+            }
+            //BOTTOM ROAD
+            if (roadNum == 3)
+            {
+                if (obs.Count == 0)
+                {
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 40f, _road3[0].body.Position.Y + 2.5f));
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 80f, _road3[0].body.Position.Y + 3.5f));
+                }
+                for (int i = 0; i < obs.Count; i++)
+                {
+                    if (_player.body.Position.X - 10 > obs[i].body.Position.X)
+                    {
+                        world.Remove(obs[i].body);
+                        obs.RemoveAt(0);
+                        if (_player.currentRoad == roadNum && !_player.crashed)
+                            _player.obstaclesPassed++;
+                    }
+
+                    if (_player.body.Position.Y > _road3[0].body.Position.Y && _player.body.Position.Y < _road1[0].body.Position.Y)
+                        _player.currentRoad = roadNum;
+                    
+                }
+            }
+
+        }
+
+        public void CreateRoad(List<Road> road, int roadNum)
+        {
+            if(roadNum == 1)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        Vector2 pos = new Vector2(playerBodySizeX * i, 0f);
+                        AddRoad(road, pos);
+                    }
+                    else
+                    {
+                        Vector2 pos = new Vector2(playerBodySizeX * i + playerBodySizeX / 2, 0f);
+                        AddRoad(road, pos);
+                    }
+                }
+            }
+
+            else if(roadNum == 2)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        Vector2 pos = new Vector2(playerBodySizeX * i + playerBodySizeX / 2, 10f);
+                        AddRoad(road, pos);
+                    }
+                    else
+                    {
+                        Vector2 pos = new Vector2(playerBodySizeX * i, 10f);
+                        AddRoad(road, pos);
+                    }
+                }
+            }
+
+            else if (roadNum == 3)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        Vector2 pos = new Vector2(60f * i - playerBodySizeX / 2, -10f);
+                        AddRoad(road, pos);
+                    }
+                    else
+                    {
+                        Vector2 pos = new Vector2(60f * i, -10f);
+                        AddRoad(road, pos);
+                    }
+                }
+            }
+        }
+
+        public void AddRoad(List<Road> pieces, Vector2 pos)
+        {
+            Road r = new Road(roadTexture);
+            r.bodySize = new Vector2(playerBodySizeX, 1f);
+            r.body = world.CreateRectangle(r.bodySize.X , r.bodySize.Y, 1f, pos);
+            Console.WriteLine("Road Piece created! pos = " + pos);
+            r.body.BodyType = BodyType.Static;
+            r.body.SetRestitution(0.0f);
+            r.body.SetFriction(0.0f);
+            r.textureSize = new Vector2(roadTexture.Width, roadTexture.Height);
+            r.textureOrigin = r.textureSize / 2f;
+            r.world = world;
+            pieces.Add(r);
+        }
+
+        private void MoveRoad()
+        {
+            if (_player.body.Position.X > _road1[_road1.Count - 2].body.Position.X)
+            {
+                Console.WriteLine("new road1 piece created!");
+                world.Remove(_road1[0].body);
+                _road1.RemoveAt(0);
+                world.Remove(_road1[0].body);
+                _road1.RemoveAt(0);
+                Vector2 new_pos1 = new Vector2(_road1[_road1.Count - 1].body.Position.X + playerBodySizeX, _road1[0].body.Position.Y);
+                AddRoad(_road1, new_pos1);
+                Vector2 new_pos2 = new Vector2(_road1[_road1.Count - 1].body.Position.X + playerBodySizeX + playerBodySizeX / 2, _road1[0].body.Position.Y);
+                AddRoad(_road1, new_pos2);
+            }
+
+            if (_player.body.Position.X > _road2[_road2.Count - 2].body.Position.X)
+            {
+                Console.WriteLine("new road2 piece created!");
+                world.Remove(_road2[0].body);
+                _road2.RemoveAt(0);
+                world.Remove(_road2[0].body);
+                _road2.RemoveAt(0);
+                Vector2 new_pos1 = new Vector2(_road2[_road2.Count - 1].body.Position.X + playerBodySizeX, _road2[0].body.Position.Y);
+                AddRoad(_road2, new_pos1);
+                Vector2 new_pos2 = new Vector2(_road2[_road2.Count - 1].body.Position.X + playerBodySizeX + playerBodySizeX / 2, _road2[0].body.Position.Y);
+                AddRoad(_road2, new_pos2);
+            }
+
+            if (_player.body.Position.X > _road3[_road3.Count - 2].body.Position.X)
+            {
+                Console.WriteLine("new road3 piece created!");
+                world.Remove(_road3[0].body);
+                _road3.RemoveAt(0);
+                world.Remove(_road3[0].body);
+                _road3.RemoveAt(0);
+                Vector2 new_pos1 = new Vector2(_road3[_road3.Count - 1].body.Position.X + playerBodySizeX, _road3[0].body.Position.Y);
+                AddRoad(_road3, new_pos1);
+                Vector2 new_pos2 = new Vector2(_road3[_road3.Count - 1].body.Position.X + playerBodySizeX + playerBodySizeX / 2, _road3[0].body.Position.Y);
+                AddRoad(_road3, new_pos2);
+            }
+        }
+
+        public void createGame()
+        {
+            //CREATE GRAVITY 
+            world = new World(new Vector2(0, -9.8f));
+
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatchEffect = new BasicEffect(graphics.GraphicsDevice);
+            _spriteBatchEffect.TextureEnabled = true;
+
+            //LOAD TEXTURES
+            roadTexture = Content.Load<Texture2D>("spaceplatform");
+            playerTexture = Content.Load<Texture2D>("square2");
+            obstacleTexture = Content.Load<Texture2D>("rectangle");
+            font = Content.Load<SpriteFont>("Time");
+
+            //CREATE ROAD
+            _road1 = new List<Road>();
+            CreateRoad(_road1, 1);
+
+            _road2 = new List<Road>();
+            CreateRoad(_road2, 2);
+
+            _road3 = new List<Road>();
+            CreateRoad(_road3, 3);
+
+            //CREATE PLAYER
+            _player = new Player(playerTexture)
+            {
+                Input = new Input()
+                {
+                    Left = Keys.Left,
+                    Right = Keys.Right,
+                    Up = Keys.Up,
+                    Down = Keys.Down,
+                    Jump = Keys.Space,
+                },
+                color = Color.White,
+                texture = playerTexture,
+            };
+
+            Vector2 playerPosition = new Vector2(-29f, 1.5f);
+            _player.bodySize = new Vector2(1f, 1f);
+            _player.body = world.CreateRectangle(_player.bodySize.X, _player.bodySize.Y, 1f, playerPosition);
+            _player.body.BodyType = BodyType.Dynamic;
+            _player.body.SetRestitution(0.0f);
+            _player.body.SetFriction(0.0f);
+            _player.textureSize = new Vector2(playerTexture.Width, playerTexture.Height);
+            _player.textureOrigin = _player.textureSize / 2f;
+            _player.world = world;
+            _player.puckEnabled = _player.initializePuck();
+            _player.currentRoad = 2;
+
+            //CREATE OBSTACLES
+            _obstacles1 = new List<Obstacle>();
+            _obstacles2 = new List<Obstacle>();
+            _obstacles3 = new List<Obstacle>();
+
+            //IntializeObstacles(_obstacles1, _road1);
+
+            //CREATE DEBUGGER
+            debugView = new DebugView(world);
+            debugView.AppendFlags(DebugViewFlags.DebugPanel | DebugViewFlags.PolygonPoints);
+            debugView.LoadContent(GraphicsDevice, Content);
+        }
+        public void resetGame()
+        {
+            createGame();
+            totalTime = 0;
+        }
+
 
         //INTIALIZE OBSTACLES
         /*
@@ -316,196 +542,6 @@ namespace Take2
                 }
             }
         }*/
-
-        protected void AddObstacle(List<Obstacle> o, Vector2 pos)
-        {
-            Obstacle obs = new Obstacle(obstacleTexture)
-            {
-                color = Color.Red
-            };
-            obs.bodySize = new Vector2(1f, 4f);
-            obs.body = world.CreateRectangle(obs.bodySize.X, obs.bodySize.Y, 2f, pos);
-            obs.body.BodyType = BodyType.Static;
-            obs.body.SetRestitution(0.0f);
-            obs.body.SetFriction(0.0f);
-            obs.textureSize = new Vector2(obs.texture.Width, obs.texture.Height);
-            obs.textureOrigin = obs.textureSize / 2f;
-            obs.world = world;
-            o.Add(obs);
-        }
-
-        public void obstacleUpdate(List<Obstacle> obs, int roadNum)
-        {
-            if(roadNum == 1)
-            {
-                if (obs.Count == 0)
-                {
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 50f, _road1[0].body.Position.Y + 2.5f));
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 175f, _road1[0].body.Position.Y + 3.5f));
-
-                }
-                for (int i = 0; i < obs.Count; i++)
-                {
-                    if (_player.body.Position.X - 100 > obs[i].body.Position.X)
-                    {
-                        world.Remove(obs[i].body);
-                        obs.RemoveAt(0);
-                    }
-                }
-            }
-            if (roadNum == 2)
-            {
-                if (obs.Count == 0)
-                {
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 75f, _road2[0].body.Position.Y + 2.5f));
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 160f, _road2[0].body.Position.Y + 3.5f));
-
-                }
-                for (int i = 0; i < obs.Count; i++)
-                {
-                    if (_player.body.Position.X - 100 > obs[i].body.Position.X)
-                    {
-                        world.Remove(obs[i].body);
-                        obs.RemoveAt(0);
-                    }
-                }
-            }
-
-            if (roadNum == 3)
-            {
-                if (obs.Count == 0)
-                {
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 30f, _road3[0].body.Position.Y + 2.5f));
-                    AddObstacle(obs, new Vector2(_player.body.Position.X + 140, _road3[0].body.Position.Y + 3.5f));
-
-                }
-                for (int i = 0; i < obs.Count; i++)
-                {
-                    if (_player.body.Position.X - 100 > obs[i].body.Position.X)
-                    {
-                        world.Remove(obs[i].body);
-                        obs.RemoveAt(0);
-                    }
-                }
-            }
-
-        }
-
-        public void CreateRoad(List<Road> road, int roadNum)
-        {
-            if(roadNum == 1)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i, 0f);
-                        AddRoad(road, pos);
-                    }
-                    else
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i + 60f, 0f);
-                        AddRoad(road, pos);
-                    }
-                }
-            }
-
-            else if(roadNum == 2)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i + 30f, 10f);
-                        AddRoad(road, pos);
-                    }
-                    else
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i, 10f);
-                        AddRoad(road, pos);
-                    }
-                }
-            }
-
-            else if (roadNum == 3)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i -30f, -10f);
-                        AddRoad(road, pos);
-                    }
-                    else
-                    {
-                        Vector2 pos = new Vector2(roadTexture.Width * i, -10f);
-                        AddRoad(road, pos);
-                    }
-                }
-            }
-        }
-
-        public void AddRoad(List<Road> pieces, Vector2 pos)
-        {
-            Road r = new Road(roadTexture);
-            // Create the ground fixture
-            r.bodySize = new Vector2(200f,1f);
-
-            r.body = world.CreateRectangle(r.bodySize.X , r.bodySize.Y, 1f, pos);
-            Console.WriteLine("Road Piece created! pos = " + pos);
- 
-            //r.body = world.CreateRectangle(r.texture.Width, 2f, 2f, pos);
-            r.body.BodyType = BodyType.Static;
-            r.body.SetRestitution(0.0f);
-            r.body.SetFriction(0.0f);
-            r.textureSize = new Vector2(roadTexture.Width, roadTexture.Height);
-            r.textureOrigin = r.textureSize / 2f;
-            r.world = world;
-
-            pieces.Add(r);
-        }
-
-        private void MoveRoad()
-        {
-            if (_player.body.Position.X > _road1[_road1.Count - 1].body.Position.X)
-            {
-                Console.WriteLine("new road1 piece created!");
-                world.Remove(_road1[0].body);
-                _road1.RemoveAt(0);
-                world.Remove(_road1[0].body);
-                _road1.RemoveAt(0);
-                Vector2 new_pos1 = new Vector2(_road1[_road1.Count - 1].body.Position.X + roadTexture.Width, _road1[0].body.Position.Y);
-                AddRoad(_road1, new_pos1);
-                Vector2 new_pos2 = new Vector2(_road1[_road1.Count - 1].body.Position.X + roadTexture.Width + 20f, _road1[0].body.Position.Y);
-                AddRoad(_road1, new_pos2);
-            }
-
-            if (_player.body.Position.X > _road2[_road2.Count - 1].body.Position.X)
-            {
-                Console.WriteLine("new road2 piece created!");
-                world.Remove(_road2[0].body);
-                _road2.RemoveAt(0);
-                world.Remove(_road2[0].body);
-                _road2.RemoveAt(0);
-                Vector2 new_pos1 = new Vector2(_road2[_road2.Count - 1].body.Position.X + roadTexture.Width, _road2[0].body.Position.Y);
-                AddRoad(_road2, new_pos1);
-                Vector2 new_pos2 = new Vector2(_road2[_road2.Count - 1].body.Position.X + roadTexture.Width + 20f, _road2[0].body.Position.Y);
-                AddRoad(_road2, new_pos2);
-            }
-
-            if (_player.body.Position.X > _road3[_road3.Count - 1].body.Position.X)
-            {
-                Console.WriteLine("new road3 piece created!");
-                world.Remove(_road3[0].body);
-                _road3.RemoveAt(0);
-                world.Remove(_road3[0].body);
-                _road3.RemoveAt(0);
-                Vector2 new_pos1 = new Vector2(_road3[_road3.Count - 1].body.Position.X + roadTexture.Width, _road3[0].body.Position.Y);
-                AddRoad(_road3, new_pos1);
-                Vector2 new_pos2 = new Vector2(_road3[_road3.Count - 1].body.Position.X + roadTexture.Width + 20f, _road3[0].body.Position.Y);
-                AddRoad(_road3, new_pos2);
-            }
-        }
 
     }
 }

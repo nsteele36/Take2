@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road3.png</SourceFile>
-  <SourceTime>2018-09-18T19:27:12-05:00</SourceTime>
+  <SourceTime>2018-10-05T15:01:16-05:00</SourceTime>
   <DestFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/bin/Windows/road3.xnb</DestFile>
-  <DestTime>2018-09-24T17:57:13.0735512-05:00</DestTime>
+  <DestTime>2018-10-05T18:51:13.2997231-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
