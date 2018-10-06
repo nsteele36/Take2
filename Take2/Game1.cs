@@ -129,8 +129,13 @@ namespace Take2
         }
         protected override void Draw(GameTime gameTime)
         {
+<<<<<<< HEAD
 
             GraphicsDevice.Clear(Color.Black);
+=======
+            
+            GraphicsDevice.Clear(Color.DarkGray);
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
             //CREATE VIEW POINT FROM CAMERA
             var vp = GraphicsDevice.Viewport;
@@ -145,6 +150,7 @@ namespace Take2
 
             //DRAW ROAD
             foreach (Road piece in _road1)
+<<<<<<< HEAD
                 spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
             foreach (Road piece in _road2)
@@ -152,6 +158,15 @@ namespace Take2
 
             foreach (Road piece in _road3)
                 spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
+=======
+                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+
+            foreach (Road piece in _road2)
+                spriteBatch.Draw(piece.texture, piece.body.Position , null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+
+            foreach (Road piece in _road3)
+                spriteBatch.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.None, 0f);
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
             //DRAW OBSTACLES
             foreach (Obstacle obs in _obstacles1)
@@ -168,8 +183,18 @@ namespace Take2
 
             spriteBatch.Begin();
 
+<<<<<<< HEAD
             spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(100, 20), Color.White);
             spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(100, 40), Color.White);
+=======
+            spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(100, 50), Color.Black);
+            spriteBatch.DrawString(font, "Current Road: " + _player.currentRoad, new Vector2(100, 90), Color.Black);
+            spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(100, 110), Color.Black);
+
+            if (_player.crashed)
+                spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(100, 70), Color.Black);
+            
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
             if (_player.crashed)
                 spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(100, 60), Color.White);
@@ -180,6 +205,7 @@ namespace Take2
             if (debuggerSwitch)
             {
                 debugView.RenderDebugData(_spriteBatchEffect.Projection, _spriteBatchEffect.View, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, 0.8f);
+<<<<<<< HEAD
                 spriteBatch.Begin();
                 if(_player.currentRoad == 1)
                     spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.currentRoad + ")", new Vector2(50, 80), Color.White);
@@ -191,6 +217,10 @@ namespace Take2
             }
 
 
+=======
+            
+                
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             base.Draw(gameTime);
         }
 
@@ -216,6 +246,7 @@ namespace Take2
             //MIDDLE ROAD
             if(roadNum == 1)
             {
+
                 if (obs.Count == 0)
                 {
                     AddObstacle(obs, new Vector2(_player.body.Position.X + 60f, _road1[0].body.Position.Y + 2.5f));
@@ -243,8 +274,13 @@ namespace Take2
             {
                 if (obs.Count == 0)
                 {
+<<<<<<< HEAD
                     AddObstacle(obs, new Vector2(_player.body.Position.X + 70f, _road2[0].body.Position.Y + 2.5f));
                     AddObstacle(obs, new Vector2(_player.body.Position.X + 130f, _road2[0].body.Position.Y + 3.5f));
+=======
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 75f, _road2[0].body.Position.Y + 2.5f));
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 160f, _road2[0].body.Position.Y + 3.5f));
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 }
                 for (int i = 0; i < obs.Count; i++)
                 {
@@ -262,13 +298,22 @@ namespace Take2
                     
                 }
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             //BOTTOM ROAD
             if (roadNum == 3)
             {
                 if (obs.Count == 0)
                 {
                     AddObstacle(obs, new Vector2(_player.body.Position.X + 40f, _road3[0].body.Position.Y + 2.5f));
+<<<<<<< HEAD
                     AddObstacle(obs, new Vector2(_player.body.Position.X + 80f, _road3[0].body.Position.Y + 3.5f));
+=======
+                    AddObstacle(obs, new Vector2(_player.body.Position.X + 140, _road3[0].body.Position.Y + 3.5f));
+
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 }
                 for (int i = 0; i < obs.Count; i++)
                 {
@@ -345,7 +390,11 @@ namespace Take2
         public void AddRoad(List<Road> pieces, Vector2 pos)
         {
             Road r = new Road(roadTexture);
+<<<<<<< HEAD
             r.bodySize = new Vector2(playerBodySizeX, 1f);
+=======
+            r.bodySize = new Vector2(200f,1f);
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             r.body = world.CreateRectangle(r.bodySize.X , r.bodySize.Y, 1f, pos);
             Console.WriteLine("Road Piece created! pos = " + pos);
             r.body.BodyType = BodyType.Static;
@@ -409,7 +458,11 @@ namespace Take2
             _spriteBatchEffect.TextureEnabled = true;
 
             //LOAD TEXTURES
+<<<<<<< HEAD
             roadTexture = Content.Load<Texture2D>("spaceplatform");
+=======
+            roadTexture = Content.Load<Texture2D>("road6");
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             playerTexture = Content.Load<Texture2D>("square2");
             obstacleTexture = Content.Load<Texture2D>("rectangle");
             font = Content.Load<SpriteFont>("Time");
@@ -439,7 +492,11 @@ namespace Take2
                 texture = playerTexture,
             };
 
+<<<<<<< HEAD
             Vector2 playerPosition = new Vector2(-29f, 1.5f);
+=======
+            Vector2 playerPosition = new Vector2(-99f, 1f);
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             _player.bodySize = new Vector2(1f, 1f);
             _player.body = world.CreateRectangle(_player.bodySize.X, _player.bodySize.Y, 1f, playerPosition);
             _player.body.BodyType = BodyType.Dynamic;

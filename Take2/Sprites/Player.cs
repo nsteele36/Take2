@@ -42,6 +42,10 @@ namespace Take2.Sprites
         }
 
         private KeyboardState old;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
         public Player(Texture2D texture) : base(texture) { }
 
@@ -59,13 +63,21 @@ namespace Take2.Sprites
                 Uncrouch();
 
             //JUMP COOLDOWN
+<<<<<<< HEAD
             if (isJumping && jumpTimer >= 1.5f && jumpCounter == max_jumps)
+=======
+            if (isJumping && jumpTimer >= 2f && jumpCounter == max_jumps)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 isJumping = false;
                 jumpCounter = 0; 
             }
 
+<<<<<<< HEAD
             if(this.body.LinearVelocity.X != max_vel && this.body.Position.X != -29f)
+=======
+            if(this.body.LinearVelocity.X != max_vel && this.body.Position.X != -99f)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 crashed = true;
         }
 
@@ -160,28 +172,43 @@ namespace Take2.Sprites
                 Console.WriteLine("Failed to initialize puck\n" + e);
                 return false;
             }
+<<<<<<< HEAD
             controlScheme = 2;
+=======
+            controlScheme = 1;
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             return true;
         }
 
         private void getPuckData()
         {
             _puck.CheckForNewPuckData();
+<<<<<<< HEAD
             if (controlScheme == 1)
+=======
+            if(controlScheme == 0)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 puckData1 = _puck.PuckPack0.Accelerometer[1];
                 puckData2 = _puck.PuckPack0.Loadcell;
             }
+<<<<<<< HEAD
             else if (controlScheme == 2)
+=======
+            else if(controlScheme == 1)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 puckData1 = _puck.PuckPack0.Loadcell;
                 puckData2 = _puck.PuckPack0.Accelerometer[1];
             }
+<<<<<<< HEAD
             else if (controlScheme == 3)
             {
                 puckData1 = _puck.PuckPack0.Loadcell;
                 puckData2 = _puck.PuckPack1.Loadcell;
             }
+=======
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
             puckMove();
             prevPD1 = puckData1;
@@ -190,26 +217,45 @@ namespace Take2.Sprites
 
         private void puckMove()
         {
+<<<<<<< HEAD
             if(controlScheme == 1)
+=======
+            if(controlScheme == 0)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 if (puckData1 > -400 && prevPD1 < -400 && !crashed)
                     Crouch();
 
+<<<<<<< HEAD
                 if (puckData1 < 400 && prevPD1 > 400 && jumpCounter < max_jumps && !crashed)
                     Jump();
 
                // if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData2 > 550 && !crashed && !isMoving)
+=======
+
+                if (puckData1 < 400 && prevPD1 > 400 && jumpCounter < max_jumps && !crashed)
+                    Jump();
+
+
+                //if (puckData2 < -400 && !crashed && !isMoving)
+                if (puckData2 > 500 && !crashed && !isMoving)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 {
                     this.body.LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
+<<<<<<< HEAD
             else if(controlScheme == 2)
+=======
+            else if(controlScheme == 1)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 if (puckData2 > -400 && prevPD2 < -400 && !crashed)
                     Crouch();
 
+<<<<<<< HEAD
                 if (puckData1 < 520 && prevPD1 > 520 && jumpCounter < max_jumps && !crashed)
                     Jump();
 
@@ -231,6 +277,15 @@ namespace Take2.Sprites
 
                 // if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData1 + puckData2 > 1040 && !crashed && !isMoving)
+=======
+
+                if (puckData1 < 520 && prevPD1 > 520 && jumpCounter < max_jumps && !crashed)
+                    Jump();
+
+
+                //if (puckData2 < -400 && !crashed && !isMoving)
+                if (puckData2 > 400 && !crashed && !isMoving)
+>>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 {
                     this.body.LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
