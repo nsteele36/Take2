@@ -150,3 +150,6 @@ C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Hid
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform.xnb
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform1.xnb
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\spaceplatform2.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\space-1.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\space-2.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\SpaceBackground1.xnb

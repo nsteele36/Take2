@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Collision\Collision.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Models\BackGround.cs" />
     <Compile Include="Models\Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

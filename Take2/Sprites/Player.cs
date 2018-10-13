@@ -3,19 +3,26 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Collision;
+using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using FitMi_Research_Puck;
+using System.Collections.Generic;
+using Take2.Models;
 
 namespace Take2.Sprites
 {
     public class Player : Sprite
     {
-        private bool isMoving = false;
+        public bool isMoving = false;
         private bool isJumping = false;
         private bool isCrouching = false;
+        public bool isOnRoad = false;
 
         private float crouchTimer = 2;
         private float jumpTimer = 2;
         private int jumpCounter = 0;
+        private int numOfJumps = 0;
+        private int numOfCrouches = 0;
 
         public bool crashed = false;
         public int currentRoad;
@@ -27,6 +34,7 @@ namespace Take2.Sprites
         public int puckData2 = 0;
         private int prevPD2 = 0;
 
+        private readonly float starting_pos = -29f;
         private readonly float max_vel = 25f;
         private readonly float max_jumps = 2;
 
@@ -42,15 +50,58 @@ namespace Take2.Sprites
         }
 
         private KeyboardState old;
-<<<<<<< HEAD
-=======
 
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
+        public Player(Texture2D texture) : base(texture) {
+            Input = new Input()
+            {
+                Left = Keys.Left,
+                Right = Keys.Right,
+                Up = Keys.Up,
+                Down = Keys.Down,
+                Jump = Keys.Space,
+            };
+            color = Color.White;
+            textureSize = new Vector2(texture.Width, texture.Height);
+            textureOrigin = textureSize / 2f;
+            puckEnabled = initializePuck();
+            currentRoad = 2;
+        }
 
-        public Player(Texture2D texture) : base(texture) { }
+        public void SetPlayerPhysics(World w)
+        {
+            world = w;
+            bodySize = new Vector2(1f, 1f);
+            Vector2 playerPosition = new Vector2(-29f, 1.5f);
+            body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
+            body.BodyType = BodyType.Dynamic;
+            body.SetRestitution(0f);
+            body.SetFriction(0f);
+            body.OnCollision += Collision;
+            body.SetCollisionGroup(0);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (world.ContactCount == 0)
+                isOnRoad = false;
+            else
+                isOnRoad = true;
+
+            if (world.ContactCount > 2)
+                crashed = true;
+
+            Move(gameTime);
+
+            //fall off map condition
+            if (body.Position.Y < -15)
+                crashed = true;
+        }
 
         private void Move(GameTime gameTime)
         {
+            //if(body.LinearVelocity.X < max_vel && !crashed && this.body.Position.X != starting_pos)
+              //  body.LinearVelocity = new Vector2(max_vel, 0f);
+            
             this.crouchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.jumpTimer +=(float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -63,22 +114,19 @@ namespace Take2.Sprites
                 Uncrouch();
 
             //JUMP COOLDOWN
-<<<<<<< HEAD
+
             if (isJumping && jumpTimer >= 1.5f && jumpCounter == max_jumps)
-=======
-            if (isJumping && jumpTimer >= 2f && jumpCounter == max_jumps)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 isJumping = false;
                 jumpCounter = 0; 
             }
 
-<<<<<<< HEAD
-            if(this.body.LinearVelocity.X != max_vel && this.body.Position.X != -29f)
-=======
-            if(this.body.LinearVelocity.X != max_vel && this.body.Position.X != -99f)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
+            if(this.body.LinearVelocity.X < max_vel / 2 && this.body.Position.X != starting_pos)
+            {
+                isMoving = false;
                 crashed = true;
+            }
+
         }
 
         private void Jump()
@@ -96,6 +144,7 @@ namespace Take2.Sprites
             this.isJumping = true;
             jumpTimer = 0;
             jumpCounter++;
+            numOfJumps++;
         }
 
         //CREATE CROUCH HITBOX 
@@ -114,6 +163,7 @@ namespace Take2.Sprites
             textureOrigin = textureSize / 2f;
             isCrouching = true;
             crouchTimer = 0;
+            numOfCrouches++;
         }
 
         //CREATE STANDING HITBOX
@@ -133,20 +183,13 @@ namespace Take2.Sprites
             isCrouching = false;
         }
 
-        public void Update(GameTime gameTime)
-        {
-            Move(gameTime);
-            if (body.Position.Y < -15)
-                crashed = true;
-        }
-
         public void keyboardMove()
         {
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Right) && !crashed && !isMoving)
             {
-                body.LinearVelocity = new Vector2(25f, 0);
+                body.LinearVelocity = new Vector2(max_vel, 0);
                 isMoving = true;
             }
 
@@ -172,43 +215,30 @@ namespace Take2.Sprites
                 Console.WriteLine("Failed to initialize puck\n" + e);
                 return false;
             }
-<<<<<<< HEAD
-            controlScheme = 2;
-=======
-            controlScheme = 1;
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
+            controlScheme = 3;
+
             return true;
+
         }
 
         private void getPuckData()
         {
             _puck.CheckForNewPuckData();
-<<<<<<< HEAD
             if (controlScheme == 1)
-=======
-            if(controlScheme == 0)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 puckData1 = _puck.PuckPack0.Accelerometer[1];
                 puckData2 = _puck.PuckPack0.Loadcell;
             }
-<<<<<<< HEAD
             else if (controlScheme == 2)
-=======
-            else if(controlScheme == 1)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 puckData1 = _puck.PuckPack0.Loadcell;
                 puckData2 = _puck.PuckPack0.Accelerometer[1];
             }
-<<<<<<< HEAD
             else if (controlScheme == 3)
             {
                 puckData1 = _puck.PuckPack0.Loadcell;
                 puckData2 = _puck.PuckPack1.Loadcell;
             }
-=======
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
 
             puckMove();
             prevPD1 = puckData1;
@@ -217,45 +247,26 @@ namespace Take2.Sprites
 
         private void puckMove()
         {
-<<<<<<< HEAD
             if(controlScheme == 1)
-=======
-            if(controlScheme == 0)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 if (puckData1 > -400 && prevPD1 < -400 && !crashed)
                     Crouch();
 
-<<<<<<< HEAD
                 if (puckData1 < 400 && prevPD1 > 400 && jumpCounter < max_jumps && !crashed)
                     Jump();
-
-               // if (puckData2 < -400 && !crashed && !isMoving)
-                if (puckData2 > 550 && !crashed && !isMoving)
-=======
-
-                if (puckData1 < 400 && prevPD1 > 400 && jumpCounter < max_jumps && !crashed)
-                    Jump();
-
 
                 //if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData2 > 500 && !crashed && !isMoving)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 {
                     this.body.LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
-<<<<<<< HEAD
             else if(controlScheme == 2)
-=======
-            else if(controlScheme == 1)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
             {
                 if (puckData2 > -400 && prevPD2 < -400 && !crashed)
                     Crouch();
 
-<<<<<<< HEAD
                 if (puckData1 < 520 && prevPD1 > 520 && jumpCounter < max_jumps && !crashed)
                     Jump();
 
@@ -277,20 +288,29 @@ namespace Take2.Sprites
 
                 // if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData1 + puckData2 > 1040 && !crashed && !isMoving)
-=======
-
-                if (puckData1 < 520 && prevPD1 > 520 && jumpCounter < max_jumps && !crashed)
-                    Jump();
-
-
-                //if (puckData2 < -400 && !crashed && !isMoving)
-                if (puckData2 > 400 && !crashed && !isMoving)
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
                 {
                     this.body.LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
+        }
+         
+        public void getCurrentRoad(List<Road> _road1, List<Road> _road2, List<Road> _road3)
+        {
+            if (body.Position.Y > _road1[0].body.Position.Y && body.Position.Y < _road2[0].body.Position.Y)
+                currentRoad = 1;
+            if (body.Position.Y > _road2[0].body.Position.Y)
+                currentRoad = 2;
+            else if (body.Position.Y > _road3[0].body.Position.Y && body.Position.Y < _road1[0].body.Position.Y)
+                currentRoad = 3;
+        }
+
+        public bool Collision(Fixture a, Fixture b, Contact c)
+        {
+           //obstacle collision
+            if (b.CollisionGroup == 1)
+                crashed = true;
+           return true;
         }
     }
 }

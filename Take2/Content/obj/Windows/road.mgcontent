@@ -3,11 +3,7 @@
   <SourceFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/road.png</SourceFile>
   <SourceTime>2018-10-05T15:01:16-05:00</SourceTime>
   <DestFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/bin/Windows/road.xnb</DestFile>
-<<<<<<< HEAD
-  <DestTime>2018-10-05T18:51:13.2059591-05:00</DestTime>
-=======
-  <DestTime>2018-10-05T11:46:30.3428648-05:00</DestTime>
->>>>>>> 2de298d0373233046f72575b0b907ed9338c66a8
+  <DestTime>2018-10-05T22:21:17.502754-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
