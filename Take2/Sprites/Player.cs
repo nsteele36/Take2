@@ -40,6 +40,8 @@ namespace Take2.Sprites
 
         private int controlScheme;
 
+        public float score;
+
         private static HIDPuckDongle _puck;
         private static PuckPacket Puck
         {
@@ -65,12 +67,13 @@ namespace Take2.Sprites
             textureOrigin = textureSize / 2f;
             puckEnabled = initializePuck();
             currentRoad = 2;
+            score = 0;
         }
 
         public void SetPlayerPhysics(World w)
         {
             world = w;
-            bodySize = new Vector2(1f, 1f);
+            bodySize = new Vector2(1.65f, 3f);
             Vector2 playerPosition = new Vector2(-29f, 1.5f);
             body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
             body.BodyType = BodyType.Dynamic;
@@ -78,6 +81,8 @@ namespace Take2.Sprites
             body.SetFriction(0f);
             body.OnCollision += Collision;
             body.SetCollisionGroup(0);
+            //body.Mass = 75f;
+            body.FixedRotation = true;
         }
 
         public void Update(GameTime gameTime)
@@ -151,14 +156,16 @@ namespace Take2.Sprites
         private void Crouch()
         {
             Vector2 playerPosition = body.Position;
+            playerPosition.Y -= 0.15f;
             Vector2 prevVel = body.LinearVelocity;
             world.Remove(body);
-            bodySize = new Vector2(1f, 0.5f);
+            bodySize = new Vector2(1.65f, 1.5f);
             body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
             body.BodyType = BodyType.Dynamic;
             body.SetRestitution(0.0f);
             body.SetFriction(0.0f);
             body.LinearVelocity = prevVel;
+            body.FixedRotation = true;
             textureSize = new Vector2(texture.Width, texture.Height);
             textureOrigin = textureSize / 2f;
             isCrouching = true;
@@ -172,12 +179,13 @@ namespace Take2.Sprites
             Vector2 playerPosition = body.Position;
             Vector2 prevVel = body.LinearVelocity;
             world.Remove(body);
-            bodySize = new Vector2(1f, 1f);
+            bodySize = new Vector2(1.65f, 3f);
             body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
             body.BodyType = BodyType.Dynamic;
             body.SetRestitution(0.0f);
             body.SetFriction(0.0f);
             body.LinearVelocity = prevVel;
+            body.FixedRotation = true;
             textureSize = new Vector2(texture.Width, texture.Height);
             textureOrigin = textureSize / 2f;
             isCrouching = false;

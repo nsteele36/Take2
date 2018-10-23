@@ -31,6 +31,5 @@ namespace Take2.Models
         {
             rectangle.X -= 3;
         }
-
     }
 }

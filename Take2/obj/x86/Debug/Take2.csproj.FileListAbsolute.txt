@@ -153,3 +153,7 @@ C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Con
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\space-1.xnb
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\space-2.xnb
 C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\SpaceBackground1.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\Astronaut.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\alien2.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\drone.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\alien3.xnb

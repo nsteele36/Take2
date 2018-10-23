@@ -12,7 +12,6 @@ namespace Take2.Sprites
 {
     public class Road : Sprite
     {
-
         private readonly float roadTextureSize = 60f;
         public Road(Texture2D texture) : base(texture) { }
 
@@ -31,12 +30,12 @@ namespace Take2.Sprites
                         }
                         else if (roadNum == 2)
                         {
-                            Vector2 pos = new Vector2(45, 10f);
+                            Vector2 pos = new Vector2(45, 13f);
                             AddRoad(road, pos, world);
                         }
                         else if (roadNum == 3)
                         {
-                            Vector2 pos = new Vector2(-45, -10f);
+                            Vector2 pos = new Vector2(-45, -13f);
                             AddRoad(road, pos, world);
                         }
 

@@ -32,10 +32,11 @@ namespace Take2
         private List<Road> _road2;
         private List<Road> _road3;
 
-        private Obstacle ObstacleManager;
+        private Obstacle ObstacleManagerJ;
         private List<Obstacle> _jumpObstacles1;
         private List<Obstacle> _jumpObstacles2;
         private List<Obstacle> _jumpObstacles3;
+        private Obstacle ObstacleManagerC;
         private List<Obstacle> _crouchObstacles1;
         private List<Obstacle> _crouchObstacles2;
         private List<Obstacle> _crouchObstacles3;
@@ -43,7 +44,8 @@ namespace Take2
         //TEXTURES
         private Texture2D roadTexture;
         private Texture2D playerTexture;
-        public Texture2D obstacleTexture;
+        public Texture2D obstacleTextureJ;
+        public Texture2D obstacleTextureC;
 
         //PHYSICS
         private World world;
@@ -99,8 +101,13 @@ namespace Take2
                 resetGame();
             }
 
-            if (!_player.crashed)
+            //GET TIME AND SCORE
+            if (!_player.crashed && _player.isMoving)
+            {
                 totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _player.score += (float)gameTime.ElapsedGameTime.TotalSeconds * 10000;
+            }
+
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -136,12 +143,12 @@ namespace Take2
 
             //UPDATE OBSTACLE
 
-            _jumpObstacles1 = ObstacleManager.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world);
-            _jumpObstacles2 = ObstacleManager.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world);
-            _jumpObstacles3 = ObstacleManager.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world);
-            _crouchObstacles1 = ObstacleManager.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world);
-            _crouchObstacles2 = ObstacleManager.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world);
-            _crouchObstacles3 = ObstacleManager.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world);
+            _jumpObstacles1 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world);
+            _jumpObstacles2 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world);
+            _jumpObstacles3 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world);
+            _crouchObstacles1 = ObstacleManagerC.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world);
+            _crouchObstacles2 = ObstacleManagerC.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world);
+            _crouchObstacles3 = ObstacleManagerC.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world);
 
             //UPDATE WORLD
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -173,18 +180,21 @@ namespace Take2
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, RasterizerState.CullClockwise, _spriteBatchEffect);
 
                 //DRAW PLAYER
-                spriteBatch.Draw(playerTexture, _player.body.Position, null, Color.White, _player.body.Rotation, _player.textureOrigin, _player.bodySize / _player.textureSize, SpriteEffects.None, 0f);
+                spriteBatch.Draw(playerTexture, _player.body.Position, null, Color.White, _player.body.Rotation, _player.textureOrigin, _player.bodySize / _player.textureSize, SpriteEffects.FlipVertically, 0f);
 
                 //DRAW ROAD
                 RoadManager.Draw(spriteBatch, _road1, _road2, _road3);
                 //DRAW OBSTACLES
-                ObstacleManager.Draw(spriteBatch, _jumpObstacles1, _jumpObstacles2, _jumpObstacles3, _crouchObstacles1, _crouchObstacles2, _crouchObstacles3);
+                ObstacleManagerJ.Draw(spriteBatch, _jumpObstacles1, _jumpObstacles2, _jumpObstacles3);
+                ObstacleManagerC.Draw(spriteBatch, _crouchObstacles1, _crouchObstacles2, _crouchObstacles3);
             
             //END
             spriteBatch.End();
 
             //UI
             spriteBatch.Begin();
+
+                spriteBatch.DrawString(font, "Score: " + (int)_player.score, new Vector2(50, 40), Color.White);
                 if (_player.crashed)
                     spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
             spriteBatch.End();
@@ -195,6 +205,9 @@ namespace Take2
                 debugView.RenderDebugData(_spriteBatchEffect.Projection, _spriteBatchEffect.View, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, 0.8f);
 
                 spriteBatch.Begin();
+
+                    spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(50, 60), Color.White);
+                    spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(50, 80), Color.White);
                     if(_player.currentRoad == 1)
                         spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
                     else if(_player.currentRoad == 2)
@@ -205,9 +218,7 @@ namespace Take2
                         spriteBatch.DrawString(font, "ON ROAD", new Vector2(50, 240), Color.White);
                     else
                         spriteBatch.DrawString(font, "OFF ROAD", new Vector2(50, 240), Color.White);
-
-                    spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(50, 60), Color.White);
-                    spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(50, 80), Color.White);
+                spriteBatch.DrawString(font, "Player Pos: " + _player.body.Position, new Vector2(50, 260), Color.White);
                 spriteBatch.End();
             }
             base.Draw(gameTime);
@@ -224,8 +235,9 @@ namespace Take2
 
             //LOAD TEXTURES
             roadTexture = Content.Load<Texture2D>("spaceplatform");
-            playerTexture = Content.Load<Texture2D>("square2");
-            obstacleTexture = Content.Load<Texture2D>("rectangle");
+            playerTexture = Content.Load<Texture2D>("Astronaut");
+            obstacleTextureJ = Content.Load<Texture2D>("drone");
+            obstacleTextureC = Content.Load<Texture2D>("alien2");
             font = Content.Load<SpriteFont>("Time");
 
             //CREATE ROAD
@@ -245,16 +257,21 @@ namespace Take2
             _player.SetPlayerPhysics(world);
 
             //CREATE OBSTACLES
-            ObstacleManager = new Obstacle(obstacleTexture);
+            ObstacleManagerJ = new Obstacle(obstacleTextureJ);
             _jumpObstacles1 = new List<Obstacle>();
             _jumpObstacles2 = new List<Obstacle>();
             _jumpObstacles3 = new List<Obstacle>();
+            ObstacleManagerC = new Obstacle(obstacleTextureC);
             _crouchObstacles1 = new List<Obstacle>();
             _crouchObstacles2 = new List<Obstacle>();
             _crouchObstacles3 = new List<Obstacle>();
 
-            //IntializeObstacles(_jumpObstacles1, _road1);
-
+            _jumpObstacles1 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles1, _road1, true, world);
+            _crouchObstacles1 = ObstacleManagerC.IntializeObstacles(_crouchObstacles1, _road1, false, world);
+            _jumpObstacles2 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles1, _road2, true, world);
+            _crouchObstacles2 = ObstacleManagerC.IntializeObstacles(_crouchObstacles2, _road2, false, world);
+            _jumpObstacles3 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles3, _road3, true, world);
+            _crouchObstacles3 = ObstacleManagerC.IntializeObstacles(_crouchObstacles3, _road3, false, world);
             //CREATE DEBUGGER
             debugView = new DebugView(world);
             debugView.AppendFlags(DebugViewFlags.DebugPanel | DebugViewFlags.PolygonPoints);

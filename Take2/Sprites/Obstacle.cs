@@ -11,7 +11,6 @@ namespace Take2.Sprites
 {
     public class Obstacle : Sprite
     {
-        //public List<Vector2> obstacles;
         public bool isVisible;
 
         public Obstacle(Texture2D texture) : base(texture) { }
@@ -23,7 +22,7 @@ namespace Take2.Sprites
                 color = Color.Red
             };
             obs.world = world;
-            obs.bodySize = new Vector2(1f, 4f);
+            obs.bodySize = new Vector2(4f, 4f);
             obs.body = world.CreateRectangle(obs.bodySize.X, obs.bodySize.Y, 2f, pos);
             obs.body.BodyType = BodyType.Static;
             obs.body.SetRestitution(0.0f);
@@ -34,139 +33,82 @@ namespace Take2.Sprites
             o.Add(obs);
         }
 
-        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world)
+        public List<Obstacle> createObstacles(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world)
         {
-                if (obs.Count == 0 && _player.isOnRoad && _player.currentRoad == roadNum)
-                {
-                    if (isJumpingObs)
-                        AddObstacle(obs, new Vector2(_player.body.Position.X + 60f, road[0].body.Position.Y + 2.5f), world);
-                    else
-                        AddObstacle(obs, new Vector2(_player.body.Position.X + 120f, road[0].body.Position.Y + 3.5f), world);
-                }
+            if (obs.Count == 0  && _player.currentRoad == roadNum)
+            {   
+                if (isJumpingObs)
+                    AddObstacle(obs, new Vector2(road[road.Count - 2].body.Position.X, road[0].body.Position.Y + 2.5f), world);
+                else
+                    AddObstacle(obs, new Vector2(road[road.Count - 1].body.Position.X, road[0].body.Position.Y + 4.5f), world);
+            }
+            return obs;
+        }
+
+        public List<Obstacle> deleteObstacles(List<Obstacle> obs, Player _player, int roadNum, World world)
+        {
+            if (obs.Count != 0)
+            {
                 for (int i = 0; i < obs.Count; i++)
                 {
                     if (_player.body.Position.X - 10 > obs[i].body.Position.X)
                     {
                         world.Remove(obs[i].body);
-                        obs.RemoveAt(0);
+                        obs.RemoveAt(i);
 
                         if (_player.currentRoad == roadNum && !_player.crashed)
+                        {
                             _player.obstaclesPassed++;
+                            _player.score += 500f;
+                        }
                     }
                 }
+            }
             return obs;
+        }
+        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world)
+        {
+            if (obs.Count == 0)
+                obs = createObstacles(obs, road, _player, roadNum, isJumpingObs, world);
+            else
+                deleteObstacles(obs, _player, roadNum, world);
 
-            //CREATING OBSTACLES USING ROAD WIP
-            /*
-            for (int i = 0; i < _road2.Count; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    if ((i == 2 || i == 6) && isJumpingObs)
-                        AddObstacle(obs, new Vector2(_road2[i].body.Position.X / 2, _road2[0].body.Position.Y + 2.5f));
-                    else if ((i == 4 || i == 8) && !isJumpingObs)
-                        AddObstacle(obs, new Vector2(_road2[i].body.Position.X / 2, _road2[0].body.Position.Y + 3.5f));
-                }
-                //else if ( i % 2 != 0 && !isJumpingObs)
-
-            }*/
-            //MIDDLE ROAD
+            return obs;
         }
 
-        public void Draw(SpriteBatch sb, List<Obstacle> jObs1, List<Obstacle> jObs2, List<Obstacle> jObs3, List<Obstacle> cObs1, List<Obstacle> cObs2, List<Obstacle> cObs3)
+        public void Draw(SpriteBatch sb, List<Obstacle> obs1, List<Obstacle> obs2, List<Obstacle> obs3)
         {
-            foreach (Obstacle obs in jObs1)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
+            foreach (Obstacle obs in obs1)
+                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.FlipVertically, 0f);
 
-            foreach (Obstacle obs in jObs2)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
+            foreach (Obstacle obs in obs2)
+                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.FlipVertically, 0f);
 
-            foreach (Obstacle obs in jObs3)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
+            foreach (Obstacle obs in obs3)
+                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.FlipVertically, 0f);
+        }
 
-            foreach (Obstacle obs in cObs1)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
-
-            foreach (Obstacle obs in cObs2)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
-
-            foreach (Obstacle obs in cObs3)
-                sb.Draw(obs.texture, obs.body.Position, null, Color.White, obs.body.Rotation, obs.textureOrigin, obs.bodySize / obs.textureSize, SpriteEffects.None, 0f);
-            //base.Draw(sb);
+        public List<Obstacle> IntializeObstacles(List<Obstacle> obs, List<Road> road, bool isJumpingObs, World world)
+        {
+            for (int i = 0; i < road.Count; i++)
+            {
+                if(i % 2 == 0)
+                {
+                    if ((i == 4 || i == 8) && isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 2.5f), world);
+                    else if ((i == 2 || i == 6) && isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2 + 300f, road[0].body.Position.Y + 2.5f), world);
+                }
+                else
+                {
+                    if ((i == 3 || i == 7) && !isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 4.5f), world);
+                    else if((i == 5 || i == 9) && !isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X + 300f, road[0].body.Position.Y + 4.5f), world);
+                }
+            }
+            return obs;
         }
     }
-
 }
 
-//INTIALIZE OBSTACLES
-/*
-public void IntializeObstacles(List<Obstacle> obs, List<Road> road)
-{
-    //iterate road pieces
-    for(int i = 0; i < road.Count; i++)
-    {
-        //create 5 objects on each road piece every 100 meters
-        for (int j = 0; j < 5; j++)
-        {
-            //variables holding positions
-            Vector2 pos;
-            float y_pos_offset = 3f;
-            float x_pos_offset;
-
-            switch (j)
-            {
-                //NOTE: i == 0 cases are to account for intial starting position
-
-                case 0:
-                    x_pos_offset = -100f;
-
-                    if (i == 0)
-                        pos = new Vector2(x_pos_offset, road[i].body.Position.Y + y_pos_offset);
-                    else
-                        pos = new Vector2(road[i].body.Position.X, road[i].body.Position.Y + y_pos_offset);
-
-                    AddObstacle(obs, pos);
-                    break;
-                case 1:
-                    x_pos_offset = 100f;
-                    if (i == 0)
-                        pos = new Vector2(100f, road[i].body.Position.Y + 3f);
-                    else
-                        //original (road[i].body.Position.X + (road[i].bodySize.X * 0.25f))
-                        pos = new Vector2((road[i].body.Position.X + x_pos_offset), road[i].body.Position.Y + y_pos_offset);
-
-                    AddObstacle(obs, pos);
-                    break;
-
-                case 2:
-                    x_pos_offset = 200f;
-                    if (i == 0)
-                        pos = new Vector2(x_pos_offset, road[i].body.Position.Y + 3f);
-                    else
-                        pos = new Vector2((road[i].body.Position.X + x_pos_offset), road[i].body.Position.Y + y_pos_offset);
-
-                    AddObstacle(obs, pos);
-                    break;
-
-                case 3:
-                    x_pos_offset = 300f;
-                    if (i == 0)
-                        pos = new Vector2(x_pos_offset, road[i].body.Position.Y + 3f);
-                    else
-                        pos = new Vector2((road[i].body.Position.X + x_pos_offset), road[i].body.Position.Y + y_pos_offset);
-
-                    AddObstacle(obs, pos);
-                    break;
-                case 4:
-                    x_pos_offset = 400f;
-                    if (i == 0)
-                        pos = new Vector2(x_pos_offset, road[i].body.Position.Y + 3f);
-                    else
-                        pos = new Vector2((road[i].body.Position.X + x_pos_offset), road[i].body.Position.Y + y_pos_offset);
-
-                    AddObstacle(obs, pos);
-                    break;
-            }
-        }
-    }
-}*/
