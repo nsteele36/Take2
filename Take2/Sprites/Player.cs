@@ -120,7 +120,7 @@ namespace Take2.Sprites
 
             //JUMP COOLDOWN
 
-            if (isJumping && jumpTimer >= 1.5f && jumpCounter == max_jumps)
+            if (isJumping && jumpTimer >= 0.7f && jumpCounter == max_jumps)
             {
                 isJumping = false;
                 jumpCounter = 0; 

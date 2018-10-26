@@ -184,6 +184,7 @@ namespace Take2
 
                 //DRAW ROAD
                 RoadManager.Draw(spriteBatch, _road1, _road2, _road3);
+
                 //DRAW OBSTACLES
                 ObstacleManagerJ.Draw(spriteBatch, _jumpObstacles1, _jumpObstacles2, _jumpObstacles3);
                 ObstacleManagerC.Draw(spriteBatch, _crouchObstacles1, _crouchObstacles2, _crouchObstacles3);
@@ -193,7 +194,6 @@ namespace Take2
 
             //UI
             spriteBatch.Begin();
-
                 spriteBatch.DrawString(font, "Score: " + (int)_player.score, new Vector2(50, 40), Color.White);
                 if (_player.crashed)
                     spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
