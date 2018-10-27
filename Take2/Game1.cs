@@ -53,7 +53,7 @@ namespace Take2
         private Boolean debuggerSwitch = false;
 
         //CAMERA
-        private Vector3 _cameraPosition = new Vector3(0, 1.70f, 0);
+        private Vector3 _cameraPosition;
         private float cameraViewWidth = 50.5f;
 
         //TEXT
@@ -63,6 +63,7 @@ namespace Take2
         //BACKGROUND
         Scrolling scrolling1;
         Scrolling scrolling2;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this)
@@ -78,7 +79,7 @@ namespace Take2
 
         protected override void Initialize()
         {
-            createGame();
+            createGame();  
             base.Initialize();
         }
 
@@ -86,6 +87,7 @@ namespace Take2
         {
             scrolling1 = new Scrolling(Content.Load<Texture2D>("space-2"), new Rectangle(0, 0, 1024, 1024));
             scrolling2 = new Scrolling(Content.Load<Texture2D>("space-1"), new Rectangle(0, 0, 1024, 1024));
+            scrolling2.rectangle = new Rectangle(scrolling1.texture.Width, 0, scrolling2.rectangle.Width, scrolling2.rectangle.Height);
         }
 
         protected override void UnloadContent()
@@ -95,60 +97,60 @@ namespace Take2
 
         protected override void Update(GameTime gameTime)
         {
-
             if ((Keyboard.GetState().IsKeyDown(Keys.R) || _player.puckData2 > 500) && _player.crashed)
-            {
                 resetGame();
-            }
 
             //GET TIME AND SCORE
             if (!_player.crashed && _player.isMoving)
             {
                 totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _player.score += (float)gameTime.ElapsedGameTime.TotalSeconds * 10000;
-            }
+                _player.score += (float)gameTime.ElapsedGameTime.TotalSeconds * 1000;
 
+                updateCamera();
+
+                //BACKGROUND
+                if (_player.isMoving)
+                {
+                    if (scrolling1.rectangle.X + scrolling1.texture.Width <= 0)
+                        scrolling1.rectangle.X = scrolling2.rectangle.X + scrolling2.texture.Width;
+                    if (scrolling2.rectangle.X + scrolling2.texture.Width <= 0)
+                        scrolling2.rectangle.X = scrolling1.rectangle.X + scrolling1.texture.Width;
+                    scrolling1.Update();
+                    scrolling2.Update();
+                }
+
+                //UPDATE OBSTACLE
+                _jumpObstacles1 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world, gameTime);
+                _jumpObstacles2 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world, gameTime);
+                _jumpObstacles3 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world, gameTime);
+                _crouchObstacles1 = ObstacleManagerC.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world, gameTime);
+                _crouchObstacles2 = ObstacleManagerC.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world, gameTime);
+                _crouchObstacles3 = ObstacleManagerC.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world, gameTime);
+            }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 //display players last position
                 Console.WriteLine("players last position = " + _player.body.Position);
+                Console.WriteLine("player passed = " + _player.passed);
                 Exit();
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.F10))
                 debuggerSwitch = !debuggerSwitch;
 
-            //UPDATE ROAD
-            _road1 = RoadManager.MoveRoad(_road1, _player, world);
-            _road2 = RoadManager.MoveRoad(_road2, _player, world);
-            _road3 = RoadManager.MoveRoad(_road3, _player, world);
-            //UPDATE CAMERA
-            updateCamera();
-
-            //BACKGROUND
-            if(_player.isMoving)
-            {
-                if (scrolling1.rectangle.X + scrolling1.texture.Width <= 0)
-                    scrolling1.rectangle.X = scrolling2.rectangle.X + scrolling2.texture.Width;
-                if (scrolling2.rectangle.X + scrolling2.texture.Width <= 0)
-                    scrolling2.rectangle.X = scrolling1.rectangle.X + scrolling1.texture.Width;
-                scrolling1.Update();
-                scrolling2.Update();
-            }
-
             //UPDATE PLAYER
             _player.Update(gameTime);
             _player.getCurrentRoad(_road1, _road2, _road3);
 
-            //UPDATE OBSTACLE
+            //UPDATE ROAD
+            _road1 = RoadManager.MoveRoad(_road1, _player, world);
+            _road2 = RoadManager.MoveRoad(_road2, _player, world);
+            _road3 = RoadManager.MoveRoad(_road3, _player, world);
 
-            _jumpObstacles1 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world);
-            _jumpObstacles2 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world);
-            _jumpObstacles3 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world);
-            _crouchObstacles1 = ObstacleManagerC.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world);
-            _crouchObstacles2 = ObstacleManagerC.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world);
-            _crouchObstacles3 = ObstacleManagerC.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world);
+            //MESSAGE FOR OBSTACLE PASSED
+            if (_player.passed && _player.passedTime + 1f < (float)gameTime.TotalGameTime.TotalSeconds )
+                _player.passed = false;
 
             //UPDATE WORLD
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -197,13 +199,16 @@ namespace Take2
                 spriteBatch.DrawString(font, "Score: " + (int)_player.score, new Vector2(50, 40), Color.White);
                 if (_player.crashed)
                     spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
+
+                if (_player.passed)
+                    spriteBatch.DrawString(font, "Enemy Passed! +500", new Vector2(150, 40), Color.Yellow);
+                
             spriteBatch.End();
 
             //DEBUGGER
             if (debuggerSwitch)
             {
                 debugView.RenderDebugData(_spriteBatchEffect.Projection, _spriteBatchEffect.View, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, 0.8f);
-
                 spriteBatch.Begin();
 
                     spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(50, 60), Color.White);
@@ -251,10 +256,11 @@ namespace Take2
             _road3 = new List<Road>();
             _road3 = RoadManager.CreateRoad(_road3, 3, world);
 
-
             //CREATE PLAYER
             _player = new Player(playerTexture);
             _player.SetPlayerPhysics(world);
+
+            _cameraPosition = new Vector3(_player.body.Position.X + 20f, _player.body.Position.Y, 0);
 
             //CREATE OBSTACLES
             ObstacleManagerJ = new Obstacle(obstacleTextureJ);
@@ -272,6 +278,7 @@ namespace Take2
             _crouchObstacles2 = ObstacleManagerC.IntializeObstacles(_crouchObstacles2, _road2, false, world);
             _jumpObstacles3 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles3, _road3, true, world);
             _crouchObstacles3 = ObstacleManagerC.IntializeObstacles(_crouchObstacles3, _road3, false, world);
+
             //CREATE DEBUGGER
             debugView = new DebugView(world);
             debugView.AppendFlags(DebugViewFlags.DebugPanel | DebugViewFlags.PolygonPoints);

@@ -45,7 +45,7 @@ namespace Take2.Sprites
             return obs;
         }
 
-        public List<Obstacle> deleteObstacles(List<Obstacle> obs, Player _player, int roadNum, World world)
+        public List<Obstacle> deleteObstacles(List<Obstacle> obs, Player _player, int roadNum, World world, GameTime gameTime)
         {
             if (obs.Count != 0)
             {
@@ -60,18 +60,20 @@ namespace Take2.Sprites
                         {
                             _player.obstaclesPassed++;
                             _player.score += 500f;
+                            _player.passed = true;
+                            _player.passedTime = (float)gameTime.TotalGameTime.TotalSeconds;
                         }
                     }
                 }
             }
             return obs;
         }
-        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world)
+        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world, GameTime gameTime)
         {
             if (obs.Count == 0)
                 obs = createObstacles(obs, road, _player, roadNum, isJumpingObs, world);
             else
-                deleteObstacles(obs, _player, roadNum, world);
+                deleteObstacles(obs, _player, roadNum, world, gameTime);
 
             return obs;
         }

@@ -27,6 +27,8 @@ namespace Take2.Sprites
         public bool crashed = false;
         public int currentRoad;
         public int obstaclesPassed = 0;
+        public bool passed = false;
+        public float passedTime = 0f;
 
         public bool puckEnabled = false;
         private int puckData1 = 0;
@@ -75,13 +77,13 @@ namespace Take2.Sprites
             world = w;
             bodySize = new Vector2(1.65f, 3f);
             Vector2 playerPosition = new Vector2(-29f, 1.5f);
+            //Vector2 playerPosition = new Vector2(-29f, 5.7f);
             body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
             body.BodyType = BodyType.Dynamic;
             body.SetRestitution(0f);
             body.SetFriction(0f);
             body.OnCollision += Collision;
             body.SetCollisionGroup(0);
-            //body.Mass = 75f;
             body.FixedRotation = true;
         }
 
@@ -93,13 +95,20 @@ namespace Take2.Sprites
                 isOnRoad = true;
 
             if (world.ContactCount > 2)
+            {
+                body.FixedRotation = false;
                 crashed = true;
+            }
 
             Move(gameTime);
 
             //fall off map condition
             if (body.Position.Y < -15)
+            {
+                body.FixedRotation = false;
                 crashed = true;
+            }
+
         }
 
         private void Move(GameTime gameTime)
@@ -126,8 +135,10 @@ namespace Take2.Sprites
                 jumpCounter = 0; 
             }
 
+            
             if(this.body.LinearVelocity.X < max_vel / 2 && this.body.Position.X != starting_pos)
             {
+                body.FixedRotation = false;
                 isMoving = false;
                 crashed = true;
             }
@@ -166,6 +177,8 @@ namespace Take2.Sprites
             body.SetFriction(0.0f);
             body.LinearVelocity = prevVel;
             body.FixedRotation = true;
+            body.OnCollision += Collision;
+            body.SetCollisionGroup(0);
             textureSize = new Vector2(texture.Width, texture.Height);
             textureOrigin = textureSize / 2f;
             isCrouching = true;
@@ -186,6 +199,8 @@ namespace Take2.Sprites
             body.SetFriction(0.0f);
             body.LinearVelocity = prevVel;
             body.FixedRotation = true;
+            body.OnCollision += Collision;
+            body.SetCollisionGroup(0);
             textureSize = new Vector2(texture.Width, texture.Height);
             textureOrigin = textureSize / 2f;
             isCrouching = false;
@@ -317,7 +332,11 @@ namespace Take2.Sprites
         {
            //obstacle collision
             if (b.CollisionGroup == 1)
+            {
                 crashed = true;
+                a.Body.FixedRotation = false;
+            }
+
            return true;
         }
     }

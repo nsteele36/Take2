@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/spaceplatform2.png</SourceFile>
-  <SourceTime>2018-10-05T20:58:19.7840352-05:00</SourceTime>
+  <SourceTime>2018-10-05T20:58:20-05:00</SourceTime>
   <DestFile>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/bin/Windows/spaceplatform2.xnb</DestFile>
-  <DestTime>2018-10-05T20:59:11.5509872-05:00</DestTime>
+  <DestTime>2018-10-27T12:49:19.1913028-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
