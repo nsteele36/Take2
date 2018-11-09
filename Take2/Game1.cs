@@ -8,10 +8,6 @@ using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using System;
 
-//TO DO:
-//DYNAMIC OBSTACLES
-//
-
 namespace Take2
 {
     public class Game1 : Game
