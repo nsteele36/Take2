@@ -13,10 +13,12 @@ namespace Take2.Sprites
 {
     public class Player : Sprite
     {
+        public enum playerPosition { MIDDLE = 1, TOP, BOTTOM, OUTOFBOUNDS};
         public bool isMoving = false;
         private bool isJumping = false;
         private bool isCrouching = false;
         public bool isOnRoad = false;
+        public bool isOutOfBounds = false;
 
         private float crouchTimer = 2;
         private float jumpTimer = 2;
@@ -87,7 +89,7 @@ namespace Take2.Sprites
             body.FixedRotation = true;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, List<Road> _road1, List<Road> _road2, List<Road> _road3)
         {
             if (world.ContactCount == 0)
                 isOnRoad = false;
@@ -100,15 +102,15 @@ namespace Take2.Sprites
                 crashed = true;
             }
 
-            Move(gameTime);
-
-            //fall off map condition
-            if (body.Position.Y < -15)
+            if (currentRoad == (int)Player.playerPosition.OUTOFBOUNDS)
             {
+                isOutOfBounds = true;
                 body.FixedRotation = false;
                 crashed = true;
             }
 
+            Move(gameTime);
+            getCurrentRoad(_road1, _road2, _road3);
         }
 
         private void Move(GameTime gameTime)
@@ -318,14 +320,16 @@ namespace Take2.Sprites
             }
         }
          
-        public void getCurrentRoad(List<Road> _road1, List<Road> _road2, List<Road> _road3)
+        private void getCurrentRoad(List<Road> _road1, List<Road> _road2, List<Road> _road3)
         {
             if (body.Position.Y > _road1[0].body.Position.Y && body.Position.Y < _road2[0].body.Position.Y)
-                currentRoad = 1;
-            if (body.Position.Y > _road2[0].body.Position.Y)
-                currentRoad = 2;
+                currentRoad = (int)playerPosition.MIDDLE;
+            else if (body.Position.Y > _road2[0].body.Position.Y && body.Position.Y < 40f)
+                currentRoad = (int)playerPosition.TOP;
             else if (body.Position.Y > _road3[0].body.Position.Y && body.Position.Y < _road1[0].body.Position.Y)
-                currentRoad = 3;
+                currentRoad = (int)playerPosition.BOTTOM;
+            else if (body.Position.Y < -40f || body.Position.Y > 40f)
+                currentRoad = (int)playerPosition.OUTOFBOUNDS;
         }
 
         public bool Collision(Fixture a, Fixture b, Contact c)

@@ -96,17 +96,17 @@ namespace Take2.Sprites
             {
                 if(i % 2 == 0)
                 {
-                    if ((i == 4 || i == 8) && isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 2.5f), world);
-                    else if ((i == 2 || i == 6) && isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2 + 300f, road[0].body.Position.Y + 2.5f), world);
+                    //if ((i == 4 || i == 8) && isJumpingObs)
+                    //    AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 2.5f), world);
+                    if ((i == 2 || i == 6) && !isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2 + 300f, road[0].body.Position.Y + 4.5f), world);
                 }
                 else
                 {
-                    if ((i == 3 || i == 7) && !isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 4.5f), world);
-                    else if((i == 5 || i == 9) && !isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].body.Position.X + 300f, road[0].body.Position.Y + 4.5f), world);
+                    //if ((i == 3 || i == 7) && !isJumpingObs)
+                    //    AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 4.5f), world);
+                    if((i == 5 || i == 9) && isJumpingObs)
+                        AddObstacle(obs, new Vector2(road[i].body.Position.X / 2 + 100f , road[0].body.Position.Y + 2.5f), world);
                 }
             }
             return obs;

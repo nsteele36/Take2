@@ -136,8 +136,7 @@ namespace Take2
                 debuggerSwitch = !debuggerSwitch;
 
             //UPDATE PLAYER
-            _player.Update(gameTime);
-            _player.getCurrentRoad(_road1, _road2, _road3);
+            _player.Update(gameTime, _road1, _road2, _road3);
 
             //UPDATE ROAD
             _road1 = RoadManager.MoveRoad(_road1, _player, world);
@@ -193,12 +192,16 @@ namespace Take2
             //UI
             spriteBatch.Begin();
                 spriteBatch.DrawString(font, "Score: " + (int)_player.score, new Vector2(50, 40), Color.White);
+                if (_player.isOutOfBounds)
+                    spriteBatch.DrawString(font, "Out of Bounds! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
                 if (_player.crashed)
                     spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
 
                 if (_player.passed)
                     spriteBatch.DrawString(font, "Enemy Passed! +500", new Vector2(150, 40), Color.Yellow);
-                
+
+
+
             spriteBatch.End();
 
             //DEBUGGER
@@ -209,13 +212,16 @@ namespace Take2
 
                     spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(50, 60), Color.White);
                     spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(50, 80), Color.White);
-                    if(_player.currentRoad == 1)
+                    if(_player.currentRoad == (int)Player.playerPosition.MIDDLE)
                         spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    else if(_player.currentRoad == 2)
+                    else if(_player.currentRoad == (int)Player.playerPosition.TOP)
                         spriteBatch.DrawString(font, "Current Road: TOP (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    else if(_player.currentRoad == 3)
+                    else if(_player.currentRoad == (int)Player.playerPosition.BOTTOM)
                         spriteBatch.DrawString(font, "Current Road: BOTTOM (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    if(_player.isOnRoad)
+                    else if (_player.currentRoad == (int)Player.playerPosition.OUTOFBOUNDS)
+                        spriteBatch.DrawString(font, "Current Road: OUT OF BOUNDS", new Vector2(50, 220), Color.White);
+
+                    if (_player.isOnRoad)
                         spriteBatch.DrawString(font, "ON ROAD", new Vector2(50, 240), Color.White);
                     else
                         spriteBatch.DrawString(font, "OFF ROAD", new Vector2(50, 240), Color.White);
@@ -241,7 +247,7 @@ namespace Take2
             obstacleTextureC = Content.Load<Texture2D>("alien2");
             font = Content.Load<SpriteFont>("Time");
 
-            //CREATE ROAD
+            //CREATE ROADS
             RoadManager = new Road(roadTexture);
             _road1 = new List<Road>();
             _road1 = RoadManager.CreateRoad(_road1, 1, world);

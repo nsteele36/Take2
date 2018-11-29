@@ -38,7 +38,6 @@ namespace Take2.Sprites
                             Vector2 pos = new Vector2(-45, -13f);
                             AddRoad(road, pos, world);
                         }
-
                     }
                     else
                     {
@@ -92,12 +91,15 @@ namespace Take2.Sprites
 
         public void Draw(SpriteBatch sb, List<Road> r1, List<Road> r2, List<Road> r3)
         {
+            //MIDDLE
             foreach (Road piece in r1)
                 sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
+            //TOP
             foreach (Road piece in r2)
                 sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
 
+            //BOTTOM
             foreach (Road piece in r3)
                 sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
         }
