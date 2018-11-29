@@ -40,8 +40,8 @@ namespace Take2
         //TEXTURES
         private Texture2D roadTexture;
         private Texture2D playerTexture;
-        public Texture2D obstacleTextureJ;
-        public Texture2D obstacleTextureC;
+        private Texture2D obstacleTextureJ;
+        private Texture2D obstacleTextureC;
 
         //PHYSICS
         private World world;
@@ -93,19 +93,20 @@ namespace Take2
 
         protected override void Update(GameTime gameTime)
         {
-            if ((Keyboard.GetState().IsKeyDown(Keys.R) || _player.puckData2 > 500) && _player.crashed)
+            if ((Keyboard.GetState().IsKeyDown(Keys.R) || _player.getPuckData2() > 500) && _player.getIsCrashed())
                 resetGame();
 
             //GET TIME AND SCORE
-            if (!_player.crashed && _player.isMoving)
+            //if (!_player.crashed && _player.isMoving)
+            if (!_player.getIsCrashed() && _player.getIsMoving())
             {
                 totalTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _player.score += (float)gameTime.ElapsedGameTime.TotalSeconds * 1000;
+                _player.setScore(_player.getScore() + (float)gameTime.ElapsedGameTime.TotalSeconds * 1000);
 
                 updateCamera();
 
                 //BACKGROUND
-                if (_player.isMoving)
+                if (_player.getIsMoving())
                 {
                     if (scrolling1.rectangle.X + scrolling1.texture.Width <= 0)
                         scrolling1.rectangle.X = scrolling2.rectangle.X + scrolling2.texture.Width;
@@ -127,8 +128,8 @@ namespace Take2
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 //display players last position
-                Console.WriteLine("players last position = " + _player.body.Position);
-                Console.WriteLine("player passed = " + _player.passed);
+                Console.WriteLine("players last position = " + _player.getBody().Position);
+                Console.WriteLine("player passed = " + _player.getIsPassed());
                 Exit();
             }
 
@@ -144,8 +145,8 @@ namespace Take2
             _road3 = RoadManager.MoveRoad(_road3, _player, world);
 
             //MESSAGE FOR OBSTACLE PASSED
-            if (_player.passed && _player.passedTime + 1f < (float)gameTime.TotalGameTime.TotalSeconds )
-                _player.passed = false;
+            if (_player.getIsPassed() && _player.getPassedTime() + 1f < (float)gameTime.TotalGameTime.TotalSeconds )
+                _player.setIsPassed(false);
 
             //UPDATE WORLD
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -156,7 +157,7 @@ namespace Take2
         private void updateCamera()
         {
             //fixes camera onto player while adusting them to the left
-            _cameraPosition = new Vector3(_player.body.Position.X + 20f, _player.body.Position.Y, 0);
+            _cameraPosition = new Vector3(_player.getBody().Position.X + 20f, _player.getBody().Position.Y, 0);
         }
         protected override void Draw(GameTime gameTime)
         {
@@ -177,7 +178,7 @@ namespace Take2
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, RasterizerState.CullClockwise, _spriteBatchEffect);
 
                 //DRAW PLAYER
-                spriteBatch.Draw(playerTexture, _player.body.Position, null, Color.White, _player.body.Rotation, _player.textureOrigin, _player.bodySize / _player.textureSize, SpriteEffects.FlipVertically, 0f);
+                spriteBatch.Draw(playerTexture, _player.getBody().Position, null, Color.White, _player.getBody().Rotation, _player.getTextureOrigin(), _player.getBodySize() / _player.getTextureSize(), SpriteEffects.FlipVertically, 0f);
 
                 //DRAW ROAD
                 RoadManager.Draw(spriteBatch, _road1, _road2, _road3);
@@ -191,13 +192,13 @@ namespace Take2
 
             //UI
             spriteBatch.Begin();
-                spriteBatch.DrawString(font, "Score: " + (int)_player.score, new Vector2(50, 40), Color.White);
-                if (_player.isOutOfBounds)
+                spriteBatch.DrawString(font, "Score: " + (int)_player.getScore(), new Vector2(50, 40), Color.White);
+                if (_player.getIsOutOfBounds())
                     spriteBatch.DrawString(font, "Out of Bounds! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
-                if (_player.crashed)
+                if (_player.getIsCrashed())
                     spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
 
-                if (_player.passed)
+                if (_player.getIsPassed())
                     spriteBatch.DrawString(font, "Enemy Passed! +500", new Vector2(150, 40), Color.Yellow);
 
 
@@ -211,21 +212,21 @@ namespace Take2
                 spriteBatch.Begin();
 
                     spriteBatch.DrawString(font, "Time: " + (int)totalTime + " seconds", new Vector2(50, 60), Color.White);
-                    spriteBatch.DrawString(font, "Obstacles Passed: " + _player.obstaclesPassed, new Vector2(50, 80), Color.White);
-                    if(_player.currentRoad == (int)Player.playerPosition.MIDDLE)
-                        spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    else if(_player.currentRoad == (int)Player.playerPosition.TOP)
-                        spriteBatch.DrawString(font, "Current Road: TOP (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    else if(_player.currentRoad == (int)Player.playerPosition.BOTTOM)
-                        spriteBatch.DrawString(font, "Current Road: BOTTOM (road" + _player.currentRoad + ")", new Vector2(50, 220), Color.White);
-                    else if (_player.currentRoad == (int)Player.playerPosition.OUTOFBOUNDS)
+                    spriteBatch.DrawString(font, "Obstacles Passed: " + _player.getObstaclesPassed(), new Vector2(50, 80), Color.White);
+                    if(_player.getCurrentRoad() == 1)
+                        spriteBatch.DrawString(font, "Current Road: MIDDLE (road" + _player.getCurrentRoad() + ")", new Vector2(50, 220), Color.White);
+                    else if(_player.getCurrentRoad() == 2)
+                        spriteBatch.DrawString(font, "Current Road: TOP (road" + _player.getCurrentRoad() + ")", new Vector2(50, 220), Color.White);
+                    else if(_player.getCurrentRoad() == 3)
+                        spriteBatch.DrawString(font, "Current Road: BOTTOM (road" + _player.getCurrentRoad() + ")", new Vector2(50, 220), Color.White);
+                    else if (_player.getCurrentRoad() == 4)
                         spriteBatch.DrawString(font, "Current Road: OUT OF BOUNDS", new Vector2(50, 220), Color.White);
 
-                    if (_player.isOnRoad)
+                    if (_player.getIsOnRoad())
                         spriteBatch.DrawString(font, "ON ROAD", new Vector2(50, 240), Color.White);
                     else
                         spriteBatch.DrawString(font, "OFF ROAD", new Vector2(50, 240), Color.White);
-                spriteBatch.DrawString(font, "Player Pos: " + _player.body.Position, new Vector2(50, 260), Color.White);
+                spriteBatch.DrawString(font, "Player Pos: " + _player.getBody().Position, new Vector2(50, 260), Color.White);
                 spriteBatch.End();
             }
             base.Draw(gameTime);
@@ -262,7 +263,7 @@ namespace Take2
             _player = new Player(playerTexture);
             _player.SetPlayerPhysics(world);
 
-            _cameraPosition = new Vector3(_player.body.Position.X + 20f, _player.body.Position.Y, 0);
+            _cameraPosition = new Vector3(_player.getBody().Position.X + 20f, _player.getBody().Position.Y, 0);
 
             //CREATE OBSTACLES
             ObstacleManagerJ = new Obstacle(obstacleTextureJ);
@@ -276,7 +277,7 @@ namespace Take2
 
             _jumpObstacles1 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles1, _road1, true, world);
             _crouchObstacles1 = ObstacleManagerC.IntializeObstacles(_crouchObstacles1, _road1, false, world);
-            _jumpObstacles2 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles1, _road2, true, world);
+            _jumpObstacles2 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles2, _road2, true, world);
             _crouchObstacles2 = ObstacleManagerC.IntializeObstacles(_crouchObstacles2, _road2, false, world);
             _jumpObstacles3 = ObstacleManagerJ.IntializeObstacles(_jumpObstacles3, _road3, true, world);
             _crouchObstacles3 = ObstacleManagerC.IntializeObstacles(_crouchObstacles3, _road3, false, world);

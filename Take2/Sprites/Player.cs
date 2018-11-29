@@ -13,12 +13,12 @@ namespace Take2.Sprites
 {
     public class Player : Sprite
     {
-        public enum playerPosition { MIDDLE = 1, TOP, BOTTOM, OUTOFBOUNDS};
-        public bool isMoving = false;
+        private enum playerPosition { MIDDLE = 1, TOP, BOTTOM, OUTOFBOUNDS};
+        private bool isMoving = false;
         private bool isJumping = false;
         private bool isCrouching = false;
-        public bool isOnRoad = false;
-        public bool isOutOfBounds = false;
+        private bool isOnRoad = false;
+        private bool isOutOfBounds = false;
 
         private float crouchTimer = 2;
         private float jumpTimer = 2;
@@ -26,16 +26,16 @@ namespace Take2.Sprites
         private int numOfJumps = 0;
         private int numOfCrouches = 0;
 
-        public bool crashed = false;
-        public int currentRoad;
-        public int obstaclesPassed = 0;
-        public bool passed = false;
-        public float passedTime = 0f;
+        private bool crashed = false;
+        private int currentRoad;
+        private int obstaclesPassed = 0;
+        private bool passed = false;
+        private float passedTime = 0f;
 
         public bool puckEnabled = false;
         private int puckData1 = 0;
         private int prevPD1 = 0;
-        public int puckData2 = 0;
+        private int puckData2 = 0;
         private int prevPD2 = 0;
 
         private readonly float starting_pos = -29f;
@@ -44,7 +44,8 @@ namespace Take2.Sprites
 
         private int controlScheme;
 
-        public float score;
+        private float score;
+        private KeyboardState old;
 
         private static HIDPuckDongle _puck;
         private static PuckPacket Puck
@@ -55,10 +56,23 @@ namespace Take2.Sprites
             }
         }
 
-        private KeyboardState old;
+        public bool getIsOnRoad() { return isOnRoad; }
+        public bool getIsMoving() { return isMoving; }
+        public bool getIsCrashed() { return crashed; }
+        public int getCurrentRoad() { return currentRoad; }
+        public int getObstaclesPassed() { return obstaclesPassed; }
+        public void setObstaclesPassed(int i) { obstaclesPassed = i; }
+        public bool getIsPassed() { return passed; }
+        public void setIsPassed(bool b) { passed = b; }
+        public float getPassedTime() { return passedTime; }
+        public void setPassedTime(float f) { passedTime = f; }
+        public float getPuckData2() { return puckData2; }
+        public float getScore() { return score; }
+        public void setScore(float f) { score = f; }
+        public bool getIsOutOfBounds() { return isOutOfBounds; }
 
         public Player(Texture2D texture) : base(texture) {
-            Input = new Input()
+            Input i = new Input()
             {
                 Left = Keys.Left,
                 Right = Keys.Right,
@@ -66,9 +80,10 @@ namespace Take2.Sprites
                 Down = Keys.Down,
                 Jump = Keys.Space,
             };
-            color = Color.White;
-            textureSize = new Vector2(texture.Width, texture.Height);
-            textureOrigin = textureSize / 2f;
+            setInput(i);
+            setColor(Color.White);
+            setTextureSize(new Vector2(texture.Width, texture.Height));
+            setTextureOrigin(getTextureSize() / 2f);
             puckEnabled = initializePuck();
             currentRoad = 2;
             score = 0;
@@ -76,36 +91,36 @@ namespace Take2.Sprites
 
         public void SetPlayerPhysics(World w)
         {
-            world = w;
-            bodySize = new Vector2(1.65f, 3f);
+            setWorld(w);
+            setBodySize( new Vector2(1.65f, 3f));
             Vector2 playerPosition = new Vector2(-29f, 1.5f);
             //Vector2 playerPosition = new Vector2(-29f, 5.7f);
-            body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
-            body.BodyType = BodyType.Dynamic;
-            body.SetRestitution(0f);
-            body.SetFriction(0f);
-            body.OnCollision += Collision;
-            body.SetCollisionGroup(0);
-            body.FixedRotation = true;
+            setBody(getWorld().CreateRectangle(getBodySize().X, getBodySize().Y, 1f, playerPosition));
+            getBody().BodyType = BodyType.Dynamic;
+            getBody().SetRestitution(0f);
+            getBody().SetFriction(0f);
+            getBody().OnCollision += Collision;
+            getBody().SetCollisionGroup(0);
+            getBody().FixedRotation = true;
         }
 
         public void Update(GameTime gameTime, List<Road> _road1, List<Road> _road2, List<Road> _road3)
         {
-            if (world.ContactCount == 0)
+            if (getWorld().ContactCount == 0)
                 isOnRoad = false;
             else
                 isOnRoad = true;
 
-            if (world.ContactCount > 2)
+            if (getWorld().ContactCount > 2)
             {
-                body.FixedRotation = false;
+                getBody().FixedRotation = false;
                 crashed = true;
             }
 
             if (currentRoad == (int)Player.playerPosition.OUTOFBOUNDS)
             {
                 isOutOfBounds = true;
-                body.FixedRotation = false;
+                getBody().FixedRotation = false;
                 crashed = true;
             }
 
@@ -138,9 +153,9 @@ namespace Take2.Sprites
             }
 
             
-            if(this.body.LinearVelocity.X < max_vel / 2 && this.body.Position.X != starting_pos)
+            if(this.getBody().LinearVelocity.X < max_vel / 2 && this.getBody().Position.X != starting_pos)
             {
-                body.FixedRotation = false;
+                getBody().FixedRotation = false;
                 isMoving = false;
                 crashed = true;
             }
@@ -151,13 +166,13 @@ namespace Take2.Sprites
         {
             if(jumpCounter == 0)
             {
-                float impulse = this.body.Mass * 12;
-                this.body.ApplyLinearImpulse(new Vector2(0, impulse), this.body.WorldCenter);
+                float impulse = this.getBody().Mass * 12;
+                this.getBody().ApplyLinearImpulse(new Vector2(0, impulse), this.getBody().WorldCenter);
             }
             else if(jumpCounter == 1)
             {
-                float impulse = this.body.Mass * 10;
-                this.body.ApplyLinearImpulse(new Vector2(0, impulse), this.body.WorldCenter);
+                float impulse = this.getBody().Mass * 10;
+                this.getBody().ApplyLinearImpulse(new Vector2(0, impulse), this.getBody().WorldCenter);
             }
             this.isJumping = true;
             jumpTimer = 0;
@@ -168,21 +183,21 @@ namespace Take2.Sprites
         //CREATE CROUCH HITBOX 
         private void Crouch()
         {
-            Vector2 playerPosition = body.Position;
+            Vector2 playerPosition = getBody().Position;
             playerPosition.Y -= 0.15f;
-            Vector2 prevVel = body.LinearVelocity;
-            world.Remove(body);
-            bodySize = new Vector2(1.65f, 1.5f);
-            body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
-            body.BodyType = BodyType.Dynamic;
-            body.SetRestitution(0.0f);
-            body.SetFriction(0.0f);
-            body.LinearVelocity = prevVel;
-            body.FixedRotation = true;
-            body.OnCollision += Collision;
-            body.SetCollisionGroup(0);
-            textureSize = new Vector2(texture.Width, texture.Height);
-            textureOrigin = textureSize / 2f;
+            Vector2 prevVel = getBody().LinearVelocity;
+            getWorld().Remove(getBody());
+            setBodySize(new Vector2(1.65f, 1.5f));
+            setBody(getWorld().CreateRectangle(getBodySize().X, getBodySize().Y, 1f, playerPosition));
+            getBody().BodyType = BodyType.Dynamic;
+            getBody().SetRestitution(0.0f);
+            getBody().SetFriction(0.0f);
+            getBody().LinearVelocity = prevVel;
+            getBody().FixedRotation = true;
+            getBody().OnCollision += Collision;
+            getBody().SetCollisionGroup(0);
+            setTextureSize(new Vector2(getTexture().Width, getTexture().Height));
+            setTextureOrigin(getTextureSize() / 2f);
             isCrouching = true;
             crouchTimer = 0;
             numOfCrouches++;
@@ -191,20 +206,20 @@ namespace Take2.Sprites
         //CREATE STANDING HITBOX
         private void Uncrouch()
         {
-            Vector2 playerPosition = body.Position;
-            Vector2 prevVel = body.LinearVelocity;
-            world.Remove(body);
-            bodySize = new Vector2(1.65f, 3f);
-            body = world.CreateRectangle(bodySize.X, bodySize.Y, 1f, playerPosition);
-            body.BodyType = BodyType.Dynamic;
-            body.SetRestitution(0.0f);
-            body.SetFriction(0.0f);
-            body.LinearVelocity = prevVel;
-            body.FixedRotation = true;
-            body.OnCollision += Collision;
-            body.SetCollisionGroup(0);
-            textureSize = new Vector2(texture.Width, texture.Height);
-            textureOrigin = textureSize / 2f;
+            Vector2 playerPosition = getBody().Position;
+            Vector2 prevVel = getBody().LinearVelocity;
+            getWorld().Remove(getBody());
+            setBodySize(new Vector2(1.65f, 3f));
+            setBody(getWorld().CreateRectangle(getBodySize().X, getBodySize().Y, 1f, playerPosition));
+            getBody().BodyType = BodyType.Dynamic;
+            getBody().SetRestitution(0.0f);
+            getBody().SetFriction(0.0f);
+            getBody().LinearVelocity = prevVel;
+            getBody().FixedRotation = true;
+            getBody().OnCollision += Collision;
+            getBody().SetCollisionGroup(0);
+            setTextureSize(new Vector2(getTexture().Width, getTexture().Height));
+            setTextureOrigin(getTextureSize() / 2f);
             isCrouching = false;
         }
 
@@ -214,7 +229,7 @@ namespace Take2.Sprites
 
             if (state.IsKeyDown(Keys.Right) && !crashed && !isMoving)
             {
-                body.LinearVelocity = new Vector2(max_vel, 0);
+                getBody().LinearVelocity = new Vector2(max_vel, 0);
                 isMoving = true;
             }
 
@@ -283,7 +298,7 @@ namespace Take2.Sprites
                 //if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData2 > 500 && !crashed && !isMoving)
                 {
-                    this.body.LinearVelocity = new Vector2(25f, 0);
+                    this.getBody().LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
@@ -298,7 +313,7 @@ namespace Take2.Sprites
                 if (puckData2 < -400 && !crashed && !isMoving)
                 //if (puckData2 > 400 && !crashed && !isMoving)
                 {
-                    this.body.LinearVelocity = new Vector2(25f, 0);
+                    this.getBody().LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
@@ -314,7 +329,7 @@ namespace Take2.Sprites
                 // if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData1 + puckData2 > 1040 && !crashed && !isMoving)
                 {
-                    this.body.LinearVelocity = new Vector2(25f, 0);
+                    this.getBody().LinearVelocity = new Vector2(25f, 0);
                     isMoving = true;
                 }
             }
@@ -322,13 +337,13 @@ namespace Take2.Sprites
          
         private void getCurrentRoad(List<Road> _road1, List<Road> _road2, List<Road> _road3)
         {
-            if (body.Position.Y > _road1[0].body.Position.Y && body.Position.Y < _road2[0].body.Position.Y)
+            if (getBody().Position.Y > _road1[0].getBody().Position.Y && getBody().Position.Y < _road2[0].getBody().Position.Y)
                 currentRoad = (int)playerPosition.MIDDLE;
-            else if (body.Position.Y > _road2[0].body.Position.Y && body.Position.Y < 40f)
+            else if (getBody().Position.Y > _road2[0].getBody().Position.Y && getBody().Position.Y < 40f)
                 currentRoad = (int)playerPosition.TOP;
-            else if (body.Position.Y > _road3[0].body.Position.Y && body.Position.Y < _road1[0].body.Position.Y)
+            else if (getBody().Position.Y > _road3[0].getBody().Position.Y && getBody().Position.Y < _road1[0].getBody().Position.Y)
                 currentRoad = (int)playerPosition.BOTTOM;
-            else if (body.Position.Y < -40f || body.Position.Y > 40f)
+            else if (getBody().Position.Y < -40f || getBody().Position.Y > 40f)
                 currentRoad = (int)playerPosition.OUTOFBOUNDS;
         }
 

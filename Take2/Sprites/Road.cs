@@ -41,14 +41,14 @@ namespace Take2.Sprites
                     }
                     else
                     {
-                        Vector2 pos = new Vector2(road[i - 1].body.Position.X + roadTextureSize, road[0].body.Position.Y);
+                        Vector2 pos = new Vector2(road[i - 1].getBody().Position.X + roadTextureSize, road[0].getBody().Position.Y);
                         AddRoad(road, pos, world);
                     }
                 }
 
                 else
                 {
-                    Vector2 pos = new Vector2(road[i - 1].body.Position.X + roadTextureSize + roadTextureSize / 2, road[0].body.Position.Y);
+                    Vector2 pos = new Vector2(road[i - 1].getBody().Position.X + roadTextureSize + roadTextureSize / 2, road[0].getBody().Position.Y);
                     AddRoad(road, pos, world);
                 }
             }
@@ -58,32 +58,32 @@ namespace Take2.Sprites
 
         public void AddRoad(List<Road> pieces, Vector2 pos, World world)
         {
-            Road r = new Road(texture);
-            r.bodySize = new Vector2(roadTextureSize, 1f);
-            r.body = world.CreateRectangle(r.bodySize.X, r.bodySize.Y, 1f, pos);
+            Road r = new Road(getTexture());
+            r.setBodySize(new Vector2(roadTextureSize, 1f));
+            r.setBody(world.CreateRectangle(r.getBodySize().X, r.getBodySize().Y, 1f, pos));
             Console.WriteLine("Road Piece created! pos = " + pos);
-            r.body.BodyType = BodyType.Static;
-            r.body.SetRestitution(0.0f);
-            r.body.SetFriction(0.0f);
-            r.textureSize = new Vector2(texture.Width, texture.Height);
-            r.textureOrigin = r.textureSize / 2f;
-            r.world = world;
-            r.body.SetCollisionGroup(2);
+            r.getBody().BodyType = BodyType.Static;
+            r.getBody().SetRestitution(0.0f);
+            r.getBody().SetFriction(0.0f);
+            r.setTextureSize(new Vector2(getTexture().Width, getTexture().Height));
+            r.setTextureOrigin(r.getTextureSize() / 2f);
+            r.setWorld(world);
+            r.getBody().SetCollisionGroup(2);
             pieces.Add(r);
         }
 
         public List<Road> MoveRoad(List<Road> road, Player _player, World world)
         {
-            if (_player.body.Position.X > road[road.Count - 2].body.Position.X)
+            if (_player.getBody().Position.X > road[road.Count - 2].getBody().Position.X)
             {
                 Console.WriteLine("new road1 piece created!");
-                world.Remove(road[0].body);
+                world.Remove(road[0].getBody());
                 road.RemoveAt(0);
-                world.Remove(road[0].body);
+                world.Remove(road[0].getBody());
                 road.RemoveAt(0);
-                Vector2 new_pos1 = new Vector2(road[road.Count - 1].body.Position.X + roadTextureSize, road[0].body.Position.Y);
+                Vector2 new_pos1 = new Vector2(road[road.Count - 1].getBody().Position.X + roadTextureSize, road[0].getBody().Position.Y);
                 AddRoad(road, new_pos1, world);
-                Vector2 new_pos2 = new Vector2(road[road.Count - 1].body.Position.X + roadTextureSize + roadTextureSize / 2, road[0].body.Position.Y);
+                Vector2 new_pos2 = new Vector2(road[road.Count - 1].getBody().Position.X + roadTextureSize + roadTextureSize / 2, road[0].getBody().Position.Y);
                 AddRoad(road, new_pos2, world);
             }
             return road;
@@ -93,19 +93,15 @@ namespace Take2.Sprites
         {
             //MIDDLE
             foreach (Road piece in r1)
-                sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
+                sb.Draw(piece.getTexture(), piece.getBody().Position, null, Color.White, piece.getBody().Rotation, piece.getTextureOrigin(), piece.getBodySize() / piece.getTextureSize(), SpriteEffects.FlipVertically, 0f);
 
             //TOP
             foreach (Road piece in r2)
-                sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
+                sb.Draw(piece.getTexture(), piece.getBody().Position, null, Color.White, piece.getBody().Rotation, piece.getTextureOrigin(), piece.getBodySize() / piece.getTextureSize(), SpriteEffects.FlipVertically, 0f);
 
             //BOTTOM
             foreach (Road piece in r3)
-                sb.Draw(piece.texture, piece.body.Position, null, Color.White, piece.body.Rotation, piece.textureOrigin, piece.bodySize / piece.textureSize, SpriteEffects.FlipVertically, 0f);
+                sb.Draw(piece.getTexture(), piece.getBody().Position, null, Color.White, piece.getBody().Rotation, piece.getTextureOrigin(), piece.getBodySize() / piece.getTextureSize(), SpriteEffects.FlipVertically, 0f);
         }
     }
 }
-
-
-
-
