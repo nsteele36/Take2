@@ -209,3 +209,9 @@ D:\TxBDC\MyGame\Take2\Take2\obj\x86\Debug\Take2.csproj.CoreCompileInputs.cache
 D:\TxBDC\MyGame\Take2\Take2\obj\x86\Debug\Take2.csproj.CopyComplete
 D:\TxBDC\MyGame\Take2\Take2\obj\x86\Debug\Take2.exe
 D:\TxBDC\MyGame\Take2\Take2\obj\x86\Debug\Take2.pdb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\crashsound.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\crouchsound.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\jumpsound.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\levelupring.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\obstaclepassedring.xnb
+C:\Users\Nick Steele\Documents\TxBDC\Take2\Take2\Take2\bin\Windows\x86\Debug\Content\8bitletters.xnb

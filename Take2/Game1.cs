@@ -7,6 +7,8 @@ using Take2.Models;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using System;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Take2
 {
@@ -57,8 +59,15 @@ namespace Take2
         private float totalTime = 0;
 
         //BACKGROUND
-        Scrolling scrolling1;
-        Scrolling scrolling2;
+        private Scrolling scrolling1;
+        private Scrolling scrolling2;
+
+        //SOUND
+        private SoundEffect jumpSound;
+        private SoundEffect crouchSound;
+        private SoundEffect crashSound;
+        private SoundEffect obstaclePassedSound;
+        private SoundEffect levelUpSound;
 
         public Game1()
         {
@@ -75,15 +84,24 @@ namespace Take2
 
         protected override void Initialize()
         {
-            createGame();  
+            createGame();
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            //SOUND INTIALIZATION
+            jumpSound = Content.Load<SoundEffect>("jumpsound");
+            crouchSound = Content.Load<SoundEffect>("crouchsound");
+            crashSound = Content.Load<SoundEffect>("crashsound");
+            obstaclePassedSound = Content.Load<SoundEffect>("obstaclepassedring");
+            levelUpSound = Content.Load<SoundEffect>("levelupring");
+
+            //SCROLLING
             scrolling1 = new Scrolling(Content.Load<Texture2D>("space-2"), new Rectangle(0, 0, 1024, 1024));
             scrolling2 = new Scrolling(Content.Load<Texture2D>("space-1"), new Rectangle(0, 0, 1024, 1024));
             scrolling2.rectangle = new Rectangle(scrolling1.texture.Width, 0, scrolling2.rectangle.Width, scrolling2.rectangle.Height);
+
         }
 
         protected override void UnloadContent()
@@ -117,12 +135,12 @@ namespace Take2
                 }
 
                 //UPDATE OBSTACLE
-                _jumpObstacles1 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world, gameTime);
-                _jumpObstacles2 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world, gameTime);
-                _jumpObstacles3 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world, gameTime);
-                _crouchObstacles1 = ObstacleManagerC.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world, gameTime);
-                _crouchObstacles2 = ObstacleManagerC.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world, gameTime);
-                _crouchObstacles3 = ObstacleManagerC.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world, gameTime);
+                _jumpObstacles1 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles1, _road1, _player, 1, true, world, gameTime, obstaclePassedSound);
+                _jumpObstacles2 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles2, _road2, _player, 2, true, world, gameTime, obstaclePassedSound);
+                _jumpObstacles3 = ObstacleManagerJ.obstacleUpdate(_jumpObstacles3, _road3, _player, 3, true, world, gameTime, obstaclePassedSound);
+                _crouchObstacles1 = ObstacleManagerC.obstacleUpdate(_crouchObstacles1, _road1, _player, 1, false, world, gameTime, obstaclePassedSound);
+                _crouchObstacles2 = ObstacleManagerC.obstacleUpdate(_crouchObstacles2, _road2, _player, 2, false, world, gameTime, obstaclePassedSound);
+                _crouchObstacles3 = ObstacleManagerC.obstacleUpdate(_crouchObstacles3, _road3, _player, 3, false, world, gameTime, obstaclePassedSound);
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -137,7 +155,7 @@ namespace Take2
                 debuggerSwitch = !debuggerSwitch;
 
             //UPDATE PLAYER
-            _player.Update(gameTime, _road1, _road2, _road3);
+            _player.Update(gameTime, _road1, _road2, _road3, jumpSound, crouchSound, levelUpSound);
 
             //UPDATE ROAD
             _road1 = RoadManager.MoveRoad(_road1, _player, world);
@@ -145,8 +163,14 @@ namespace Take2
             _road3 = RoadManager.MoveRoad(_road3, _player, world);
 
             //MESSAGE FOR OBSTACLE PASSED
-            if (_player.getIsPassed() && _player.getPassedTime() + 1f < (float)gameTime.TotalGameTime.TotalSeconds )
+            if (_player.getIsPassed() && _player.getPassedTime() + 1f < (float)gameTime.TotalGameTime.TotalSeconds)
                 _player.setIsPassed(false);
+
+            if (_player.getIsCrashed() && !_player.getCrashSoundPlayed())
+            {
+                crashSound.Play();
+                _player.setCrashSoundPlayed(true);
+            }
 
             //UPDATE WORLD
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -192,14 +216,19 @@ namespace Take2
 
             //UI
             spriteBatch.Begin();
+
                 spriteBatch.DrawString(font, "Score: " + (int)_player.getScore(), new Vector2(50, 40), Color.White);
+
                 if (_player.getIsOutOfBounds())
-                    spriteBatch.DrawString(font, "Out of Bounds! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
-                if (_player.getIsCrashed())
-                    spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(800 / 2, 700 / 2), Color.Red);
+                    spriteBatch.DrawString(font, "OUT OF BOUNDS! Press r to restart", new Vector2(670 / 2, 750 / 2), Color.Red);
+                else if (_player.getIsCrashed())
+                    spriteBatch.DrawString(font, "CRASHED! Press r to restart", new Vector2(670 / 2, 750 / 2), Color.Red);
 
                 if (_player.getIsPassed())
-                    spriteBatch.DrawString(font, "Enemy Passed! +500", new Vector2(150, 40), Color.Yellow);
+                    spriteBatch.DrawString(font, "Enemy Passed! +500", new Vector2(50, 20), Color.Yellow);
+
+                if(_player.getLevelUp() && _player.getLevelUptimer() < (float)gameTime.TotalGameTime.TotalSeconds)
+                    spriteBatch.DrawString(font, "   LEVEL UP!\nSpeed Increased", new Vector2(425, 40), Color.Yellow);
 
 
 
@@ -245,8 +274,8 @@ namespace Take2
             roadTexture = Content.Load<Texture2D>("spaceplatform");
             playerTexture = Content.Load<Texture2D>("Astronaut");
             obstacleTextureJ = Content.Load<Texture2D>("drone");
-            obstacleTextureC = Content.Load<Texture2D>("alien2");
-            font = Content.Load<SpriteFont>("Time");
+            obstacleTextureC = Content.Load<Texture2D>("alien3");
+            font = Content.Load<SpriteFont>("8bitletters");
 
             //CREATE ROADS
             RoadManager = new Road(roadTexture);

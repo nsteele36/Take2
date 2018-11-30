@@ -24,5 +24,11 @@
     <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/Astronaut.png</File>
     <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/drone.png</File>
     <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/spaceplatform.png</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/jumpsound.wav</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/levelupring.wav</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/obstaclepassedring.wav</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/crashsound.wav</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/crouchsound.wav</File>
+    <File>C:/Users/Nick Steele/Documents/TxBDC/Take2/Take2/Take2/Content/8bitletters.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>

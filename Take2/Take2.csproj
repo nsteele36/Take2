@@ -74,6 +74,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <Content Include="Sounds\crashsound.mp3" />
+    <Content Include="Sounds\crouchsound.mp3" />
+    <Content Include="Sounds\jumpsound.wav" />
+    <Content Include="Sounds\levelupring.wav" />
+    <Content Include="Sounds\obstaclepassedring.wav" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

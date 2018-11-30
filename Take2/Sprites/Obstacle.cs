@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,14 @@ namespace Take2.Sprites
 
         public Obstacle(Texture2D texture) : base(texture) { }
 
-        protected void AddObstacle(List<Obstacle> o, Vector2 pos, World world)
+        protected void AddObstacle(List<Obstacle> o, Vector2 pos, World world, bool isJumpingObs)
         {
             Obstacle obs = new Obstacle(getTexture());
             obs.setWorld(world);
-            obs.setBodySize(new Vector2(4f, 4f));
+            if (isJumpingObs)
+                obs.setBodySize(new Vector2(5f, 5f));
+            else
+                obs.setBodySize(new Vector2(5f, 4f));
             obs.setBody( world.CreateRectangle(obs.getBodySize().X, obs.getBodySize().Y, 2f, pos));
             obs.getBody().BodyType = BodyType.Static;
             obs.getBody().SetRestitution(0.0f);
@@ -35,14 +39,14 @@ namespace Take2.Sprites
             if (obs.Count == 0  && _player.getCurrentRoad() == roadNum)
             {   
                 if (isJumpingObs)
-                    AddObstacle(obs, new Vector2(road[road.Count - 2].getBody().Position.X, road[0].getBody().Position.Y + 2.5f), world);
+                    AddObstacle(obs, new Vector2(road[road.Count - 2].getBody().Position.X, road[0].getBody().Position.Y + 2.5f), world, isJumpingObs);
                 else
-                    AddObstacle(obs, new Vector2(road[road.Count - 1].getBody().Position.X, road[0].getBody().Position.Y + 4.5f), world);
+                    AddObstacle(obs, new Vector2(road[road.Count - 1].getBody().Position.X, road[0].getBody().Position.Y + 4.5f), world, isJumpingObs);
             }
             return obs;
         }
 
-        public List<Obstacle> deleteObstacles(List<Obstacle> obs, Player _player, int roadNum, World world, GameTime gameTime)
+        public List<Obstacle> deleteObstacles(List<Obstacle> obs, Player _player, int roadNum, World world, GameTime gameTime, SoundEffect obstaclePassedSound)
         {
             if (obs.Count != 0)
             {
@@ -55,26 +59,23 @@ namespace Take2.Sprites
 
                         if (_player.getCurrentRoad() == roadNum && !_player.getIsCrashed())
                         {
-                            //_player.obstaclesPassed++;
-                            //_player.score += 500f;
-                            //_player.passed = true;
-                            //_player.passedTime = (float)gameTime.TotalGameTime.TotalSeconds;
                             _player.setObstaclesPassed(_player.getObstaclesPassed() + 1);
                             _player.setScore(_player.getScore() + 500f);
                             _player.setIsPassed(true);
                             _player.setPassedTime((float)gameTime.TotalGameTime.TotalSeconds);
+                            obstaclePassedSound.Play();
                         }
                     }
                 }
             }
             return obs;
         }
-        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world, GameTime gameTime)
+        public List<Obstacle> obstacleUpdate(List<Obstacle> obs, List<Road> road, Player _player, int roadNum, bool isJumpingObs, World world, GameTime gameTime, SoundEffect obstaclePassedSound)
         {
             if (obs.Count == 0)
                 obs = createObstacles(obs, road, _player, roadNum, isJumpingObs, world);
             else
-                deleteObstacles(obs, _player, roadNum, world, gameTime);
+                deleteObstacles(obs, _player, roadNum, world, gameTime, obstaclePassedSound);
 
             return obs;
         }
@@ -100,14 +101,14 @@ namespace Take2.Sprites
                     //if ((i == 4 || i == 8) && isJumpingObs)
                     //    AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 2.5f), world);
                     if ((i == 2 || i == 6) && !isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].getBody().Position.X / 2 + 300f, road[0].getBody().Position.Y + 4.5f), world);
+                        AddObstacle(obs, new Vector2(road[i].getBody().Position.X / 2 + 300f, road[0].getBody().Position.Y + 4.5f), world, isJumpingObs);
                 }
                 else
                 {
                     //if ((i == 3 || i == 7) && !isJumpingObs)
                     //    AddObstacle(obs, new Vector2(road[i].body.Position.X / 2, road[0].body.Position.Y + 4.5f), world);
                     if((i == 5 || i == 9) && isJumpingObs)
-                        AddObstacle(obs, new Vector2(road[i].getBody().Position.X / 2 + 100f , road[0].getBody().Position.Y + 2.5f), world);
+                        AddObstacle(obs, new Vector2(road[i].getBody().Position.X / 2 + 100f , road[0].getBody().Position.Y + 2.5f), world, isJumpingObs);
                 }
             }
             return obs;

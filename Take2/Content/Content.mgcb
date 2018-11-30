@@ -248,3 +248,40 @@
 /processorParam:TextureFormat=Color
 /build:spaceplatform.png
 
+#begin jumpsound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:jumpsound.wav
+
+#begin levelupring.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:levelupring.wav
+
+#begin obstaclepassedring.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:obstaclepassedring.wav
+
+#begin crashsound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:crashsound.wav
+
+#begin crouchsound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:crouchsound.wav
+
+#begin 8bitletters.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:8bitletters.spritefont
+

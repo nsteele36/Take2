@@ -8,6 +8,7 @@ using tainicom.Aether.Physics2D.Dynamics.Contacts;
 using FitMi_Research_Puck;
 using System.Collections.Generic;
 using Take2.Models;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Take2.Sprites
 {
@@ -19,9 +20,12 @@ namespace Take2.Sprites
         private bool isCrouching = false;
         private bool isOnRoad = false;
         private bool isOutOfBounds = false;
+        private bool isLevelUp = false;
 
+        public float current_vel = 25f;
         private float crouchTimer = 2;
         private float jumpTimer = 2;
+        private float levelUpTimer = 0f;
         private int jumpCounter = 0;
         private int numOfJumps = 0;
         private int numOfCrouches = 0;
@@ -31,6 +35,8 @@ namespace Take2.Sprites
         private int obstaclesPassed = 0;
         private bool passed = false;
         private float passedTime = 0f;
+        private float crashedTime = 0f;
+        private bool crashSoundPlayed = false;
 
         public bool puckEnabled = false;
         private int puckData1 = 0;
@@ -39,7 +45,6 @@ namespace Take2.Sprites
         private int prevPD2 = 0;
 
         private readonly float starting_pos = -29f;
-        private readonly float max_vel = 25f;
         private readonly float max_jumps = 2;
 
         private int controlScheme;
@@ -56,20 +61,30 @@ namespace Take2.Sprites
             }
         }
 
+        //ACCESSORS
+        public bool getLevelUp() { return isLevelUp; }
         public bool getIsOnRoad() { return isOnRoad; }
         public bool getIsMoving() { return isMoving; }
         public bool getIsCrashed() { return crashed; }
+        public bool getIsPassed() { return passed; }
+        public bool getIsOutOfBounds() { return isOutOfBounds; }
+        public bool getCrashSoundPlayed() { return crashSoundPlayed; }
         public int getCurrentRoad() { return currentRoad; }
         public int getObstaclesPassed() { return obstaclesPassed; }
-        public void setObstaclesPassed(int i) { obstaclesPassed = i; }
-        public bool getIsPassed() { return passed; }
-        public void setIsPassed(bool b) { passed = b; }
         public float getPassedTime() { return passedTime; }
-        public void setPassedTime(float f) { passedTime = f; }
+        public float getCrashedTime() { return crashedTime; }
         public float getPuckData2() { return puckData2; }
         public float getScore() { return score; }
+        public float getLevelUptimer() { return levelUpTimer; }
+
+        //MUTATORS
+        public void setObstaclesPassed(int i) { obstaclesPassed = i; }
         public void setScore(float f) { score = f; }
-        public bool getIsOutOfBounds() { return isOutOfBounds; }
+        public void setPassedTime(float f) { passedTime = f; }
+        public void setIsPassed(bool b) { passed = b; }
+        public void setCrashSoundPlayed(bool b) { crashSoundPlayed = b; }
+        public void setIsLevelUp(bool b) { isLevelUp = b; }
+
 
         public Player(Texture2D texture) : base(texture) {
             Input i = new Input()
@@ -94,7 +109,6 @@ namespace Take2.Sprites
             setWorld(w);
             setBodySize( new Vector2(1.65f, 3f));
             Vector2 playerPosition = new Vector2(-29f, 1.5f);
-            //Vector2 playerPosition = new Vector2(-29f, 5.7f);
             setBody(getWorld().CreateRectangle(getBodySize().X, getBodySize().Y, 1f, playerPosition));
             getBody().BodyType = BodyType.Dynamic;
             getBody().SetRestitution(0f);
@@ -104,7 +118,7 @@ namespace Take2.Sprites
             getBody().FixedRotation = true;
         }
 
-        public void Update(GameTime gameTime, List<Road> _road1, List<Road> _road2, List<Road> _road3)
+        public void Update(GameTime gameTime, List<Road> _road1, List<Road> _road2, List<Road> _road3,  SoundEffect jumpSound, SoundEffect crouchSound, SoundEffect levelUpSound)
         {
             if (getWorld().ContactCount == 0)
                 isOnRoad = false;
@@ -115,6 +129,7 @@ namespace Take2.Sprites
             {
                 getBody().FixedRotation = false;
                 crashed = true;
+                crashedTime = this.crouchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (currentRoad == (int)Player.playerPosition.OUTOFBOUNDS)
@@ -122,13 +137,31 @@ namespace Take2.Sprites
                 isOutOfBounds = true;
                 getBody().FixedRotation = false;
                 crashed = true;
+                crashedTime = this.crouchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            Move(gameTime);
+            if (obstaclesPassed % 6 == 0 && obstaclesPassed != 0 && !isLevelUp)
+            {
+                SoundEffectInstance levelUpS = levelUpSound.CreateInstance();
+                levelUpS.IsLooped = false;
+                levelUpSound.Play();
+                current_vel += 2f;
+                getBody().LinearVelocity = new Vector2(current_vel, 0);
+                isLevelUp = true;
+                levelUpTimer = (float)gameTime.TotalGameTime.TotalSeconds;
+            }
+
+            if (isLevelUp && obstaclesPassed % 5 != 0)
+                isLevelUp = false;
+            
+
+            Move(gameTime, jumpSound, crouchSound);
             getCurrentRoad(_road1, _road2, _road3);
+
+
         }
 
-        private void Move(GameTime gameTime)
+        private void Move(GameTime gameTime, SoundEffect jumpSound, SoundEffect crouchSound)
         {
             //if(body.LinearVelocity.X < max_vel && !crashed && this.body.Position.X != starting_pos)
               //  body.LinearVelocity = new Vector2(max_vel, 0f);
@@ -136,33 +169,32 @@ namespace Take2.Sprites
             this.crouchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.jumpTimer +=(float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            keyboardMove();
+            keyboardMove(jumpSound, crouchSound);
             if(puckEnabled)
-                getPuckData();
+                getPuckData(jumpSound, crouchSound);
             
             //CROUCH COOLDOWN
             if (isCrouching && crouchTimer >= 1.0f)
                 Uncrouch();
 
             //JUMP COOLDOWN
-
             if (isJumping && jumpTimer >= 0.7f && jumpCounter == max_jumps)
             {
                 isJumping = false;
                 jumpCounter = 0; 
             }
-
             
-            if(this.getBody().LinearVelocity.X < max_vel / 2 && this.getBody().Position.X != starting_pos)
+            if(this.getBody().LinearVelocity.X < current_vel / 2 && this.getBody().Position.X != starting_pos)
             {
                 getBody().FixedRotation = false;
                 isMoving = false;
                 crashed = true;
+                crashedTime = this.crouchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
         }
 
-        private void Jump()
+        private void Jump(SoundEffect jumpSound)
         {
             if(jumpCounter == 0)
             {
@@ -178,13 +210,14 @@ namespace Take2.Sprites
             jumpTimer = 0;
             jumpCounter++;
             numOfJumps++;
+            jumpSound.Play();
         }
 
         //CREATE CROUCH HITBOX 
-        private void Crouch()
+        private void Crouch(SoundEffect crouchSound)
         {
             Vector2 playerPosition = getBody().Position;
-            playerPosition.Y -= 0.15f;
+            playerPosition.Y -= 0.60f;
             Vector2 prevVel = getBody().LinearVelocity;
             getWorld().Remove(getBody());
             setBodySize(new Vector2(1.65f, 1.5f));
@@ -201,6 +234,7 @@ namespace Take2.Sprites
             isCrouching = true;
             crouchTimer = 0;
             numOfCrouches++;
+            crouchSound.Play();
         }
 
         //CREATE STANDING HITBOX
@@ -223,26 +257,27 @@ namespace Take2.Sprites
             isCrouching = false;
         }
 
-        public void keyboardMove()
+        public void keyboardMove(SoundEffect jumpSound, SoundEffect crouchSound)
         {
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Right) && !crashed && !isMoving)
             {
-                getBody().LinearVelocity = new Vector2(max_vel, 0);
+                getBody().LinearVelocity = new Vector2(current_vel, 0);
                 isMoving = true;
             }
 
             //CROUCH
-            if (state.IsKeyDown(Keys.Down) && !crashed)
-                Crouch();
+            if (state.IsKeyUp(Keys.Down) && old.IsKeyDown(Keys.Down) && !crashed)
+                Crouch(crouchSound);
 
             //JUMP
             if (state.IsKeyUp(Keys.Up) && old.IsKeyDown(Keys.Up) && jumpCounter < max_jumps && !crashed)
-                Jump();
+                Jump(jumpSound);
 
             old = state;
         }
+
         public bool initializePuck()
         {
             try
@@ -261,7 +296,7 @@ namespace Take2.Sprites
 
         }
 
-        private void getPuckData()
+        private void getPuckData(SoundEffect jumpSound, SoundEffect crouchSound)
         {
             _puck.CheckForNewPuckData();
             if (controlScheme == 1)
@@ -280,20 +315,20 @@ namespace Take2.Sprites
                 puckData2 = _puck.PuckPack1.Loadcell;
             }
 
-            puckMove();
+            puckMove(jumpSound, crouchSound);
             prevPD1 = puckData1;
             prevPD2 = puckData2;
         }
 
-        private void puckMove()
+        private void puckMove(SoundEffect jumpSound, SoundEffect crouchSound)
         {
             if(controlScheme == 1)
             {
                 if (puckData1 > -400 && prevPD1 < -400 && !crashed)
-                    Crouch();
+                    Crouch(crouchSound);
 
                 if (puckData1 < 400 && prevPD1 > 400 && jumpCounter < max_jumps && !crashed)
-                    Jump();
+                    Jump(jumpSound);
 
                 //if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData2 > 500 && !crashed && !isMoving)
@@ -305,10 +340,11 @@ namespace Take2.Sprites
             else if(controlScheme == 2)
             {
                 if (puckData2 > -400 && prevPD2 < -400 && !crashed)
-                    Crouch();
+                    Crouch(crouchSound);
 
                 if (puckData1 < 520 && prevPD1 > 520 && jumpCounter < max_jumps && !crashed)
-                    Jump();
+                    Jump(jumpSound);
+
 
                 if (puckData2 < -400 && !crashed && !isMoving)
                 //if (puckData2 > 400 && !crashed && !isMoving)
@@ -321,10 +357,11 @@ namespace Take2.Sprites
             else if(controlScheme == 3)
             {
                 if (puckData1 > 520 && prevPD1 < 520 && jumpCounter < max_jumps && !crashed)
-                    Jump();
+                    Jump(jumpSound);
+
 
                 if (puckData2 > 520 && prevPD2 < 520 && !crashed)
-                    Crouch();
+                       Crouch(crouchSound);
 
                 // if (puckData2 < -400 && !crashed && !isMoving)
                 if (puckData1 + puckData2 > 1040 && !crashed && !isMoving)
